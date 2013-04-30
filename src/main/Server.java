@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class Server {
 	
 	private ServerSocket server;
-    private HashMap<String, User> userMap; // Maps usernames to users.
+    private HashMap<String, UserConnection> userMap; // Maps usernames to users.
     private HashMap<String, Room> roomMap; // Maps room names to rooms
     
     public String getNickname(Socket s){
@@ -65,7 +65,7 @@ public class Server {
 	    		Socket socket = server.accept();
 	    		String nickname = getNickname(socket);
 	    		
-	    		userMap.put(nickname, new User(nickname, socket));
+	    		userMap.put(nickname, new UserConnection(nickname, socket));
     		}
     	}
     	catch(IOException e){
@@ -77,7 +77,7 @@ public class Server {
      */
     public static void main(String[] args) {
         Server server = new Server(1234);
-        
+        server.listen();
         
         // YOUR CODE HERE
         // It is not required (or recommended) to implement the server in

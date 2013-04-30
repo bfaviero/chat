@@ -7,14 +7,14 @@ public class Room implements Runnable{
     //The unique ID for this Conversation.
     private int id;
     private String title;
-    private List<User> users = new ArrayList<User>();
+    private List<UserConnection> users = new ArrayList<UserConnection>();
     private List<Message> messages = new ArrayList<Message>();
 
-    public Room(int id, String title, Client starter)
+    public Room(int id, String title, UserConnection owner)
     {
         this.id = id;
         this.title = title;
-        this.users.add(starter);
+        this.users.add(owner);
     }
 
     public void addUser(Client user)
