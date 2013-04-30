@@ -3,12 +3,11 @@ package main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
+import java.util.HashMap;
 
 /**
  * Chat server runner.
@@ -16,17 +15,22 @@ import java.util.Random;
 public class Server {
 	
 	private ServerSocket server;
-    private ArrayList<Conversation> channels;
-    private Map<String, Socket> usernameConnectionMap; // Maps usernames to Sockets
+    private HashMap<String, User> userMap; // Maps usernames to users.
+    private HashMap<String, Room> roomMap; // Maps room names to rooms
     
     public String getNickname(Socket s){
+    	if(!s.isConnected())
+    		throw new RuntimeException("Socket not connected");
+    	
     	try {
 	    	BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+	    	
+			out.println("USER?");
 			String line = in.readLine();
 			String nickname;
 			
-			if(line.matches("NICK (\\w+)")){
+			if(line.matches("USER (\\w+)")){
 				nickname = line.split(" ")[1];
 				return nickname;
 			}
@@ -36,18 +40,32 @@ public class Server {
     	}
     	
     	// Failed to get a nickname, generating a random one
-		return new String("Guest_" + String.valueOf(usernameConnectionMap.size() + 1));
+		return new String("Guest_" + String.valueOf(userMap.size() + 1));
     }
     
-    public Server() {
+    /**
+     * Instantiate a server on the specified port.
+     * @param port The port to use for our server
+     */
+    public Server(int port) {
     	try{
-    		server = new ServerSocket(1234);
-    		
+    		server = new ServerSocket(port);
+    	}
+    	catch(Exception e){
+    		e.printStackTrace();   		
+    	}
+    }
+    
+    /**
+     *  Listen for connections on the port specified in the Server constructor
+     */
+    public void listen(){
+    	try{    		
     		while(true){
 	    		Socket socket = server.accept();
 	    		String nickname = getNickname(socket);
 	    		
-	    		usernameConnectionMap.put(nickname, socket);
+	    		userMap.put(nickname, new User(nickname, socket));
     		}
     	}
     	catch(IOException e){
@@ -58,7 +76,7 @@ public class Server {
      * Start a chat server.
      */
     public static void main(String[] args) {
-        Server server = new Server();
+        Server server = new Server(1234);
         
         
         // YOUR CODE HERE

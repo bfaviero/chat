@@ -2,19 +2,18 @@ package main;
 
 import java.util.*;
 
-public class Conversation implements Runnable{
+public class Room implements Runnable{
 	
     //The unique ID for this Conversation.
     private int id;
-    private String name;
-    //The List of all current participants in the Conversation.
-    //Invariant: There must be at least one Client in a Conversation's users List.
-    private List<Client> users = new ArrayList<Client>();
+    private String title;
+    private List<User> users = new ArrayList<User>();
     private List<Message> messages = new ArrayList<Message>();
 
-    public Conversation(int id, Server s, Client starter)
+    public Room(int id, String title, Client starter)
     {
         this.id = id;
+        this.title = title;
         this.users.add(starter);
     }
 
