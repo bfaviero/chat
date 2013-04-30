@@ -5,7 +5,7 @@ import java.util.*;
 public class Message {
 
     private final Client author;
-    private final Conversation conver;
+    private final Room conver;
     private final Date date;
     private final String text;
     
@@ -17,7 +17,7 @@ public class Message {
      * @param date the time at which this message was sent; used in filtering.
      * @param text the contents of this message
      */
-    public Message(Client author, Conversation conver, Date date, String text)
+    public Message(Client author, Room conver, Date date, String text)
     {
         this.author = author;
         this.conver = conver;
