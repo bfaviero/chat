@@ -15,33 +15,8 @@ import java.util.HashMap;
 public class Server {
 	
 	private ServerSocket server;
-    private HashMap<String, User> userMap; // Maps usernames to users.
+    private HashMap<String, UserConnection> userMap; // Maps usernames to users.
     private HashMap<String, Room> roomMap; // Maps room names to rooms
-    
-    public String getNickname(Socket s){
-    	if(!s.isConnected())
-    		throw new RuntimeException("Socket not connected");
-    	
-    	try {
-	    	BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-	    	
-			out.println("USER?");
-			String line = in.readLine();
-			String nickname;
-			
-			if(line.matches("USER (\\w+)")){
-				nickname = line.split(" ")[1];
-				return nickname;
-			}
-    	}
-    	catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	
-    	// Failed to get a nickname, generating a random one
-		return new String("Guest_" + String.valueOf(userMap.size() + 1));
-    }
     
     /**
      * Instantiate a server on the specified port.
@@ -50,6 +25,8 @@ public class Server {
     public Server(int port) {
     	try{
     		server = new ServerSocket(port);
+    		userMap = new HashMap<String, UserConnection>();
+    		roomMap = new HashMap<String, Room>();
     	}
     	catch(Exception e){
     		e.printStackTrace();   		
@@ -63,13 +40,40 @@ public class Server {
     	try{    		
     		while(true){
 	    		Socket socket = server.accept();
-	    		String nickname = getNickname(socket);
+	    		String username = new String("Guest_" + String.valueOf(userMap.size() + 1));
 	    		
-	    		userMap.put(nickname, new User(nickname, socket));
+	    		UserConnection user = new UserConnection(username, socket, this);
+	    		Thread t = new Thread(user);
+	    		t.start();
+	    		
+	    		userMap.put(username, user);
     		}
     	}
     	catch(IOException e){
     		e.printStackTrace();
+    	}
+    }
+    
+    public String changeUsername(String oldUsername, String newUsername){
+    	synchronized(userMap){
+	    	if(userMap.containsKey(newUsername)){
+	    		return "Error: Username is already taken";
+	    	}
+	    	UserConnection user = userMap.get(oldUsername);
+	    	userMap.remove(oldUsername);
+	    	userMap.put(newUsername, user);
+	    	return "Username change successful";
+    	}
+    }
+    
+    public void processUserDisconnect(String username){
+    	synchronized(userMap){
+    		if(userMap.containsKey(username)){
+    			userMap.remove(username);
+    		}
+    		else{
+    			System.err.println("Trying to remove non-existent user");
+    		}
     	}
     }
     /**
@@ -77,7 +81,7 @@ public class Server {
      */
     public static void main(String[] args) {
         Server server = new Server(1234);
-        
+        server.listen();
         
         // YOUR CODE HERE
         // It is not required (or recommended) to implement the server in

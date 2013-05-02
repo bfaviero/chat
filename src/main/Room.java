@@ -6,19 +6,19 @@ import client.Client;
 
 public class Room implements Runnable{
 	
-    //The unique ID for this Conversation.
-    private int id;
     private String title;
-    private List<User> users = new ArrayList<User>();
+    private List<UserConnection> users = new ArrayList<UserConnection>();
     private List<Message> messages = new ArrayList<Message>();
 
-    public Room(int id, String title, Client starter)
+    public Room(String title, UserConnection owner)
     {
-        this.id = id;
         this.title = title;
-        this.users.add(starter);
+        this.users.add(owner);
     }
-
+    public void addMessage(Message m)
+    {
+        this.messages.add(m);
+    }
     public void addUser(Client user)
     {
         //if !this.users.has(user) { users.add(user) }
@@ -28,12 +28,10 @@ public class Room implements Runnable{
         //if this.users.has(user) { users.remove(user) }
         //if this.users.size() == 0 { //delete Conversation }
     }
-    public int getID()
+    public void hasUser(Client user)
     {
-        //Return this Conversation's ID
-        return this.id;
+        //if this.users.has(user)
     }
-
 	@Override
 	public void run() {
 		

@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+//TODO: Separate Model and Runnable aspects of code
+
 /**
  * GUI chat client runner.
  */
