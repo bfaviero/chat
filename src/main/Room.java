@@ -4,15 +4,12 @@ import java.util.*;
 
 public class Room implements Runnable{
 	
-    //The unique ID for this Conversation.
-    private int id;
     private String title;
     private List<UserConnection> users = new ArrayList<UserConnection>();
     private List<Message> messages = new ArrayList<Message>();
 
-    public Room(int id, String title, UserConnection owner)
+    public Room(String title, UserConnection owner)
     {
-        this.id = id;
         this.title = title;
         this.users.add(owner);
     }
@@ -33,12 +30,6 @@ public class Room implements Runnable{
     {
         //if this.users.has(user)
     }
-    public int getID()
-    {
-        //Return this Conversation's ID
-        return this.id;
-    }
-
 	@Override
 	public void run() {
 		
