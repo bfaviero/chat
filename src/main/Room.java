@@ -2,6 +2,8 @@ package main;
 
 import java.util.*;
 
+import client.Client;
+
 public class Room implements Runnable{
 	
     //The unique ID for this Conversation.

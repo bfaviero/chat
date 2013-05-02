@@ -2,6 +2,8 @@ package main;
 
 import java.util.*;
 
+import client.Client;
+
 public class Message {
 
     private final Client author;
