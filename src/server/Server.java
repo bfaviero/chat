@@ -1,4 +1,4 @@
-package main;
+package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,14 +9,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
+import main.Connection;
+
 /**
  * Chat server runner.
  */
 public class Server {
 	
 	private ServerSocket server;
-    private HashMap<String, UserConnection> userMap; // Maps usernames to users.
-    private HashMap<String, Room> roomMap; // Maps room names to rooms
+    private HashMap<String, Connection> userMap; // Maps usernames to users.
+    private HashMap<String, Channel> roomMap; // Maps room names to rooms
     
     /**
      * Instantiate a server on the specified port.
@@ -25,8 +27,8 @@ public class Server {
     public Server(int port) {
     	try{
     		server = new ServerSocket(port);
-    		userMap = new HashMap<String, UserConnection>();
-    		roomMap = new HashMap<String, Room>();
+    		userMap = new HashMap<String, Connection>();
+    		roomMap = new HashMap<String, Channel>();
     	}
     	catch(Exception e){
     		e.printStackTrace();   		
@@ -42,7 +44,7 @@ public class Server {
 	    		Socket socket = server.accept();
 	    		String username = new String("Guest_" + String.valueOf(userMap.size() + 1));
 	    		
-	    		UserConnection user = new UserConnection(username, socket, this);
+	    		Connection user = new Connection(username, socket, this);
 	    		Thread t = new Thread(user);
 	    		t.start();
 	    		
@@ -59,7 +61,7 @@ public class Server {
 	    	if(userMap.containsKey(newUsername)){
 	    		return "Error: Username is already taken";
 	    	}
-	    	UserConnection user = userMap.get(oldUsername);
+	    	Connection user = userMap.get(oldUsername);
 	    	userMap.remove(oldUsername);
 	    	userMap.put(newUsername, user);
 	    	return "Username change successful";

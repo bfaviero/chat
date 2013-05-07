@@ -1,16 +1,19 @@
-package main;
+package server;
 
 import java.util.*;
 
+import main.Connection;
+
+
 import client.Client;
 
-public class Room implements Runnable{
+public class Channel{
 	
     private String title;
-    private List<UserConnection> users = new ArrayList<UserConnection>();
+    private List<Connection> users = new ArrayList<Connection>();
     private List<Message> messages = new ArrayList<Message>();
 
-    public Room(String title, UserConnection owner)
+    public Channel(String title, Connection owner)
     {
         this.title = title;
         this.users.add(owner);
@@ -32,9 +35,5 @@ public class Room implements Runnable{
     {
         //if this.users.has(user)
     }
-	@Override
-	public void run() {
-		
-	}
 
 }
