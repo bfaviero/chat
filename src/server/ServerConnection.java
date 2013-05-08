@@ -1,75 +1,48 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 import main.Connection;
+import main.Message;
 
-public class ServerConnection extends Connection implements Runnable {
+
+
+public class ServerConnection extends Connection {
 	// Commented out fields inherited from Connection:
 	
 	// public String username;
 	// public Socket socket;
-	// private BufferedReader in;
-	// private PrintWriter out;
 	private Server server;
-	private Thread writer;
-	private Thread reader;
+	private User user;
 	
-	public class ConnectionReader implements Runnable {
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	public class ConnectionWriter implements Runnable {
-
-		@Override
-		public void run() {
-			
-		}
-		
-		
-	}
+	// Queue of messages to send across the socket
+	private BlockingQueue<Message> messageQueue;
 	
 	public ServerConnection(String user, Socket sock, Server server) {
 		super(user, sock);
 		this.server = server;
-		reader = new Thread(ConnectionReader);
-		reader.start();
-		writer = new Thread(ConnectionWriter);
-		writer.start();
 	}
 
-	public void processCommand(String command){
-		if(command.matches("USER (\\w+)")){
-			String newUsername = command.split(" ")[1];
-			System.out.println(newUsername);
-			String response = this.server.changeUsername(this.nickname, newUsername);
-			
-			if(response.contains("successful")){
-				this.nickname = newUsername;
-			}
-			
-			out.write(response + "\n");
-			out.flush();
-		}
-		else if(command.matches("QUIT")){
-			closeSockets();
-			return;
-		}		
+	public void processMessage(Message message){
+		System.out.println("Message received and processing in progress");
 	}
 	
 	public void closeSockets(){
 		try{
+			// Stop handling IO
+			this.readerThread.interrupt();
+			this.writerThread.interrupt();
+			
+			// Process disconnect and clean up sockets
 			this.server.processUserDisconnect(this.nickname);
-			in.close();
-			out.close();
 			this.socket.close();
 		}
 		catch(Exception e){
@@ -77,18 +50,4 @@ public class ServerConnection extends Connection implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
-	public void run(){
-		try{
-			for (String command =in.readLine(); command!=null; command=in.readLine()) {
-				
-			}
-		catch(Exception e){
-			System.err.println("Error reading commands from socket.");
-		}
-			e.printStackTrace();
-		}
-	}
-	
-	
 }

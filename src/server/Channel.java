@@ -3,6 +3,7 @@ package server;
 import java.util.*;
 
 import main.Connection;
+import main.Message;
 
 
 import client.Client;
