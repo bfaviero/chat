@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import client.Client;
+
 import server.User;
 
 
@@ -14,7 +16,7 @@ public class Connection {
 		protected String nickname;
 		protected Socket socket;
 		protected User user;
-		
+		protected Client client;
 		protected Thread readerThread;
 		protected Thread writerThread;
 		

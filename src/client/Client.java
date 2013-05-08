@@ -8,62 +8,42 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-//TODO: Separate Model and Runnable aspects of code
+import main.Message;
 
-/**
- * GUI chat client runner.
- */
+import server.Server;
+import server.User;
+
+
 public class Client {
-    private Socket socket;
-    private String server;
-    private final String username;
-    BufferedWriter out;
-    BufferedReader in;
-    
-    public Client(String server, String username, Socket socket)
-    {
-        this.socket = socket;
-        this.username = username;
-    }
-    public void joinConversation(int id)
-    {
-        //Join the Conversation with ID id.  If this is already a member, do nothing.
-    }
-    public void leaveConversation(int id)
-    {
-        //Leave the Conversation with ID id.  If this is not a member, do nothing.
-    }
-    public boolean isMemberOf(int id)
-    {
-    	return false;
-        //See if this Client is a member of the Conversation with ID id.
-    }
-    public void join(String channel) throws IOException{
-        send("JOIN " + channel + "\r\n");
-    }
-    public void connect(String username) {
-        
-    }
-    public void send(String message) throws IOException {
-        
-        out.write(message);
-        out.flush();
-    }
-    /**
-     * Start a GUI chat client.
-     */
-    public void main(String[] args) throws Exception {
+    private MainApp gui;
+    private Client client;
+    private List<String> currentRooms;
+    private HashMap<String, List<Message>> roomMessages; // Maps usernames to users.
+    private ClientConnection conn;
+
+    public Client(){
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                MainApp gui = new MainApp();
+                gui = new MainApp(conn);
+                gui.init();
             }
         });
-        
-
     }
-
+    /**
+     *  Listen for connections on the port specified in the Server constructor
+     * @throws IOException 
+     * @throws UnknownHostException 
+     */
+    public void createConnection(String user) throws UnknownHostException, IOException {
+        Socket socket = new Socket("localhost", 1234);
+        conn = new ClientConnection(user, socket, this);
+    }
+ 
 }

@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 public class RoomTextListener implements KeyListener {
     private JList roomList;
     private JTextField roomText;
-    public RoomTextListener(JList roomList, JTextField roomText) {
+    public RoomTextListener(JList roomList, JTextField roomText, ClientConnection conn) {
         this.roomList = roomList;
         this.roomText = roomText;
     }

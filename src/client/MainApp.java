@@ -31,16 +31,17 @@ public class MainApp {
     private JTextField roomText;
     private JTextField type;
     private JTextField SigninText;
-
+    private ClientConnection conn;
+    private Client client;
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
+    public void init() {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    MainApp window = new MainApp();
-                    window.frame.setVisible(true);
+                    initialize();
+                    frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -51,8 +52,8 @@ public class MainApp {
     /**
      * Create the application.
      */
-    public MainApp() {
-        initialize();
+    public MainApp(ClientConnection conn) {
+        this.conn = conn;
     }
 
     /**
@@ -182,7 +183,7 @@ public class MainApp {
          * 
          */
 
-        SigninListener signinListener = new SigninListener(SigninText, frame, title_label);
+        SigninListener signinListener = new SigninListener(SigninText, frame, title_label, client);
         join_button.addActionListener(signinListener);
         signin_panel.add(join_button);
                 
@@ -194,7 +195,7 @@ public class MainApp {
         JList roomList = new JList(model);
         roomList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         verticalBox.add(roomList);
-        RoomTextListener roomTextListener = new RoomTextListener(roomList, roomText);
+        RoomTextListener roomTextListener = new RoomTextListener(roomList, roomText, conn);
 
         roomText.addKeyListener(roomTextListener);
         roomText.setMaximumSize(roomText.getPreferredSize() );
