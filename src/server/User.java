@@ -2,6 +2,7 @@ package server;
 
 import main.Connection;
 
+
 public class User {
 	private int id;
 	private String nickname;

@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 
 import main.Connection;
 import main.Message;
+import main.User;
 
 
 

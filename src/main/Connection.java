@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import server.User;
 
 
 public class Connection {
