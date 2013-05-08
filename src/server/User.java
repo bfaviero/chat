@@ -12,5 +12,4 @@ public class User {
 		this.nickname = nickname;
 		this.connection = connection;
 	}
-	
 }

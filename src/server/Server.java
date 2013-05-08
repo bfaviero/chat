@@ -1,23 +1,17 @@
 package server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-
-import main.Connection;
 
 /**
  * Chat server runner.
  */
 public class Server {
-	
+	private int nextId;
 	private ServerSocket server;
-    private HashMap<String, Connection> userMap; // Maps usernames to users.
+    private HashMap<String, User> userMap; // Maps usernames to users.
     private HashMap<String, Channel> roomMap; // Maps room names to rooms
     
     /**
@@ -27,8 +21,9 @@ public class Server {
     public Server(int port) {
     	try{
     		server = new ServerSocket(port);
-    		userMap = new HashMap<String, Connection>();
+    		userMap = new HashMap<String, User>();
     		roomMap = new HashMap<String, Channel>();
+    		nextId = 0;
     	}
     	catch(Exception e){
     		e.printStackTrace();   		
@@ -42,13 +37,15 @@ public class Server {
     	try{    		
     		while(true){
 	    		Socket socket = server.accept();
-	    		String username = new String("Guest_" + String.valueOf(userMap.size() + 1));
+	    		String nickname = new String("Guest_" + String.valueOf(userMap.size() + 1));
 	    		
-	    		Connection user = new Connection(username, socket, this);
-	    		Thread t = new Thread(user);
-	    		t.start();
+	    		// Create a server connection and connect it to the appropriate user.
+	    		ServerConnection userConnection = new ServerConnection(nickname, socket, this);
+	    		User user = new User(nextId, nickname, userConnection);
+	    		userConnection.setUser(user);
+	    		nextId++;
 	    		
-	    		userMap.put(username, user);
+	    		userMap.put(nickname, user);
     		}
     	}
     	catch(IOException e){
@@ -61,7 +58,7 @@ public class Server {
 	    	if(userMap.containsKey(newUsername)){
 	    		return "Error: Username is already taken";
 	    	}
-	    	Connection user = userMap.get(oldUsername);
+	    	User user = userMap.get(oldUsername);
 	    	userMap.remove(oldUsername);
 	    	userMap.put(newUsername, user);
 	    	return "Username change successful";
