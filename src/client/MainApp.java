@@ -35,6 +35,7 @@ public class MainApp {
     private Client client;
     /**
      * Launch the application.
+     * @wbp.parser.entryPoint
      */
     public void init() {
         EventQueue.invokeLater(new Runnable() {
@@ -174,6 +175,9 @@ public class MainApp {
         
         type = new JTextField();
         type.setColumns(10);
+
+        JLabel roomLabel = new JLabel("New label");
+        chatPanel.add(roomLabel, BorderLayout.NORTH);
         
         /*
          * 
@@ -195,14 +199,16 @@ public class MainApp {
         JList roomList = new JList(model);
         roomList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         verticalBox.add(roomList);
-        RoomTextListener roomTextListener = new RoomTextListener(roomList, roomText, conn);
+        RoomTextListener roomTextListener = new RoomTextListener(roomList, roomText, roomLabel, conn);
 
         roomText.addKeyListener(roomTextListener);
         roomText.setMaximumSize(roomText.getPreferredSize() );
         
-        TypeListener typeListener = new TypeListener(chatList, type);
+        TypeListener typeListener = new TypeListener(chatList, type, roomLabel,  conn);
         type.addKeyListener(typeListener);
         horizontalBox.add(type);
+        
+        
 
 
         

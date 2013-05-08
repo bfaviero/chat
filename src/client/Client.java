@@ -43,7 +43,7 @@ public class Client {
      */
     public void createConnection(String user) throws UnknownHostException, IOException {
         Socket socket = new Socket("localhost", 1234);
-        conn = new ClientConnection(user, socket, this);
+        conn = new ClientConnection(user, socket, gui);
     }
  
 }

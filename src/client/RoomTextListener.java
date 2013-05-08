@@ -13,16 +13,23 @@ import javax.swing.JTextField;
 public class RoomTextListener implements KeyListener {
     private JList roomList;
     private JTextField roomText;
-    public RoomTextListener(JList roomList, JTextField roomText, ClientConnection conn) {
+    private ClientConnection conn;
+    private JLabel roomLabel;
+    public RoomTextListener(JList roomList, JTextField roomText, JLabel roomLabel, ClientConnection conn) {
         this.roomList = roomList;
         this.roomText = roomText;
+        this.conn = conn;
+        this.roomLabel = roomLabel;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) {   
+            String text = roomText.getText();
             DefaultListModel model = (DefaultListModel) roomList.getModel();
-            model.addElement(roomText.getText());
+            model.addElement(text);
+            conn.join(text);
+            roomLabel.setText("Room: "+text);
             roomText.setText("");
             
         }

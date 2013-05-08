@@ -1,5 +1,6 @@
 package main;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import main.Connection.Command;
@@ -8,13 +9,13 @@ public class Message implements java.io.Serializable{
 	private static final long serialVersionUID = -5296132268968878736L;
 	private Command command;	
 	private String channelName;
-	private Date date;
+	private Calendar calendar;
 	private String messageText;
 	
-	public Message(Command command, String channelName, Date date, String messageText){
+	public Message(Command command, String channelName, Calendar date, String messageText){
 		this.channelName = channelName;
 		this.command = command;
-		this.date = date;
+		this.calendar = calendar;
 		this.messageText = messageText;
 	}
 
@@ -35,12 +36,12 @@ public class Message implements java.io.Serializable{
 		this.channelName = channelName;
 	}
 	
-	public Date getDate(){
-		return this.date;
+	public Calendar getDate(){
+		return this.calendar;
 	}
 	
-	public void setDate(Date newDate){
-		this.date = newDate;
+	public void setDate(Calendar newDate){
+		this.calendar = Calendar.getInstance();
 	}
 	
 	public String getMessageText(){
