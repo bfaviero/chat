@@ -51,27 +51,31 @@ public class Login {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
         
+        JPanel panel = new JPanel();
+        frame.getContentPane().add(panel);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        
         JLabel lblWelcomeToGui = new JLabel("Welcome to GUI Chat!");
+        panel.add(lblWelcomeToGui);
         lblWelcomeToGui.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblWelcomeToGui.setAlignmentY(0.0f);
         lblWelcomeToGui.setHorizontalAlignment(SwingConstants.CENTER);
-        frame.getContentPane().add(lblWelcomeToGui);
         
         Component verticalStrut = Box.createVerticalStrut(20);
-        frame.getContentPane().add(verticalStrut);
+        panel.add(verticalStrut);
         
         JLabel lblNewLabel = new JLabel("Type your username:");
+        panel.add(lblNewLabel);
         lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        frame.getContentPane().add(lblNewLabel);
         
         textField = new JTextField();
-        frame.getContentPane().add(textField);
+        panel.add(textField);
         textField.setColumns(10);
         textField.setMaximumSize( textField.getPreferredSize() );
         
         JButton btnNewButton = new JButton("Join server");
+        panel.add(btnNewButton);
         btnNewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        frame.getContentPane().add(btnNewButton);
     }
 
 }

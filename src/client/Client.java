@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 
 //TODO: Separate Model and Runnable aspects of code
 
@@ -53,34 +57,12 @@ public class Client {
      * Start a GUI chat client.
      */
     public void main(String[] args) throws Exception {
-        String channel = "default";
-        String server = "localhost";
-        Socket socket = new Socket(server, 1234);
-        out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream( )));
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream( )));
-        while (true) {
-            String line = in.readLine();
-            if (line != null) {
-                if (line.indexOf("100") >= 0) {
-                    break;
-                }
-                else if (line.indexOf("101") >= 0) {
-                    System.out.println("Nickname taken.");
-                    return;
-                }
-                else if (line.toLowerCase().startsWith("PING ")) {
-                    // We must respond to PINGs to avoid being disconnected.
-                    out.write("PONG " + line.substring(5) + "\r\n");
-                    out.write("PRIVMSG " + channel + " :I got pinged!\r\n");
-                    out.flush( );
-                }
-                else {
-                    // Print the raw line received by the bot.
-                    System.out.println(line);
-                }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                MainApp gui = new MainApp();
             }
-                
-        }
+        });
+        
 
     }
 
