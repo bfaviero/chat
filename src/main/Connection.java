@@ -13,7 +13,7 @@ import server.User;
 
 
 public class Connection {
-		protected String nickname;
+		protected int userId;
 		protected Socket socket;
 		protected User user;
 		protected Client client;
@@ -76,12 +76,12 @@ public class Connection {
 		
 		}
 		
-		public Connection(String nickname, Socket sock){
+		public Connection(int userId, Socket sock){
 			if(!sock.isConnected())
 	    		throw new RuntimeException("Socket not connected");
 			
 			this.messageQueue = new PriorityBlockingQueue<Message>();
-			this.nickname = nickname;
+			this.userId = userId;
 			this.socket = sock;
 			ConnectionReader reader = new ConnectionReader();
 			ConnectionWriter writer = new ConnectionWriter();

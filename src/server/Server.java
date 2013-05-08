@@ -3,15 +3,24 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 import java.util.HashMap;
+
+import servervisitors.Visitable;
+import servervisitors.Visitor;
+
+import main.Connection.Command;
+import main.Message;
+import main.User;
 
 /**
  * Chat server runner.
  */
-public class Server {
+
+public class Server implements Visitable{
 	private int nextId;
 	private ServerSocket server;
-    private HashMap<String, User> userMap; // Maps usernames to users.
+    private HashMap<Integer, User> userMap; // Maps usernames to users.
     private HashMap<String, Channel> roomMap; // Maps room names to rooms
     
     /**
@@ -21,7 +30,7 @@ public class Server {
     public Server(int port) {
     	try{
     		server = new ServerSocket(port);
-    		userMap = new HashMap<String, User>();
+    		userMap = new HashMap<Integer, User>();
     		roomMap = new HashMap<String, Channel>();
     		nextId = 0;
     	}
@@ -37,15 +46,20 @@ public class Server {
     	try{    		
     		while(true){
 	    		Socket socket = server.accept();
-	    		String nickname = new String("Guest_" + String.valueOf(userMap.size() + 1));
+	    		String nickname = new String("Guest_" + String.valueOf(nextId));
 	    		
 	    		// Create a server connection and connect it to the appropriate user.
-	    		ServerConnection userConnection = new ServerConnection(nickname, socket, this);
+	    		ServerConnection userConnection = new ServerConnection(nextId, socket, this);
 	    		User user = new User(nextId, nickname, userConnection);
 	    		userConnection.setUser(user);
-	    		nextId++;
 	    		
-	    		userMap.put(nickname, user);
+	    		synchronized(userMap){
+	    			userMap.put(nextId, user);
+	    		}
+	    		// Send a response that connection was successful;
+	    		userConnection.sendMessage(new Message(nextId, Command.LOGIN_SUCCESS, "", new Date(), ""))
+	    		
+	    		nextId++;
     		}
     	}
     	catch(IOException e){
@@ -53,28 +67,7 @@ public class Server {
     	}
     }
     
-    public String changeUsername(String oldUsername, String newUsername){
-    	synchronized(userMap){
-	    	if(userMap.containsKey(newUsername)){
-	    		return "Error: Username is already taken";
-	    	}
-	    	User user = userMap.get(oldUsername);
-	    	userMap.remove(oldUsername);
-	    	userMap.put(newUsername, user);
-	    	return "Username change successful";
-    	}
-    }
     
-    public void processUserDisconnect(String username){
-    	synchronized(userMap){
-    		if(userMap.containsKey(username)){
-    			userMap.remove(username);
-    		}
-    		else{
-    			System.err.println("Trying to remove non-existent user");
-    		}
-    	}
-    }
     /**
      * Start a chat server.
      */
@@ -86,4 +79,9 @@ public class Server {
         // It is not required (or recommended) to implement the server in
         // this runner class.
     }
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }
