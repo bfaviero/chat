@@ -1,12 +1,7 @@
 package client;
 
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -16,9 +11,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import main.Message;
-
-import server.Server;
-import server.User;
 
 
 public class Client {
@@ -43,7 +35,7 @@ public class Client {
      */
     public void createConnection(String user) throws UnknownHostException, IOException {
         Socket socket = new Socket("localhost", 1234);
-        conn = new ClientConnection(user, socket, gui);
+        conn = new ClientConnection(socket, gui);
     }
  
 }

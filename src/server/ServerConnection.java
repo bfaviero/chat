@@ -3,8 +3,6 @@ package server;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
-import servervisitors.JoinServerVisitor;
-
 import main.Connection;
 import main.Message;
 import main.User;
@@ -16,6 +14,7 @@ public class ServerConnection extends Connection {
 	
 	// public String username;
 	// public Socket socket;
+	private int userId;
 	private Server server;
 	private User user;
 	
@@ -23,13 +22,14 @@ public class ServerConnection extends Connection {
 	private BlockingQueue<Message> messageQueue;
 	
 	public ServerConnection(int userId, Socket sock, Server server) {
-		super(userId, sock);
+		super(sock);
+		this.userId = userId;
 		this.server = server;
 	}
 
 	public void processMessage(Message message){
 		System.out.println("Message received and processing in progress");
-		System.out.println(message.getDate() + ": " + message.getUserId() + " " + message.getChannelName() + " " + message.getMessageText());
+		System.out.println(message.getDate() + ": " + message.getChannelName() + " " + message.getMessageText());
 		
 		switch(message.getCommand()){
 		case JOIN:

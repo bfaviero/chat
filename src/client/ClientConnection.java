@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.concurrent.BlockingQueue;
 
 import server.Server;
-import server.User;
+import main.User;
 
 import main.Connection;
 import main.Message;
@@ -15,8 +15,8 @@ import main.Message;
 public class ClientConnection extends Connection {
     private MainApp gui;
     private BlockingQueue<Message> messageQueue;
-    public ClientConnection(String user, Socket socket, MainApp gui) {
-        super(user, socket);
+    public ClientConnection(Socket socket, MainApp gui) {
+        super(socket);
         this.gui = gui;   
     }
     public void join(String room) {

@@ -5,15 +5,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import client.Client;
 
-import server.User;
+import main.User;
 
 
 public class Connection {
-		protected int userId;
 		protected Socket socket;
 		protected User user;
 		protected Client client;
@@ -40,6 +40,9 @@ public class Connection {
 				
 				try{
 					while(!Thread.currentThread().isInterrupted()){
+						// Make sure that we're dealing with a valid socket;
+						if(socket.isClosed()) break;
+						
 						Message nextMessage = (Message)ois.readObject();
 						processMessage(nextMessage);
 					}
@@ -76,12 +79,11 @@ public class Connection {
 		
 		}
 		
-		public Connection(int userId, Socket sock){
+		public Connection(Socket sock){
 			if(!sock.isConnected())
 	    		throw new RuntimeException("Socket not connected");
 			
-			this.messageQueue = new PriorityBlockingQueue<Message>();
-			this.userId = userId;
+			this.messageQueue = new LinkedBlockingQueue<Message>();
 			this.socket = sock;
 			ConnectionReader reader = new ConnectionReader();
 			ConnectionWriter writer = new ConnectionWriter();
@@ -103,7 +105,7 @@ public class Connection {
 			return this.user;
 		}
 		
-		public void setUser(User u){
-			this.user = u;
+		public void setUser(User user){
+			this.user = user;
 		}
 }

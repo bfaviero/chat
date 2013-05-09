@@ -208,7 +208,7 @@ public class MainApp {
         type.addKeyListener(typeListener);
         horizontalBox.add(type);
         
-        
+       
 
 
         

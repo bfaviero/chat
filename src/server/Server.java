@@ -3,11 +3,9 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-import servervisitors.Visitable;
-import servervisitors.Visitor;
 
 import main.Connection.Command;
 import main.Message;
@@ -17,7 +15,7 @@ import main.User;
  * Chat server runner.
  */
 
-public class Server implements Visitable{
+public class Server{
 	private int nextId;
 	private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
@@ -57,7 +55,7 @@ public class Server implements Visitable{
 	    			userMap.put(nextId, user);
 	    		}
 	    		// Send a response that connection was successful;
-	    		userConnection.sendMessage(new Message(nextId, Command.LOGIN_SUCCESS, "", new Date(), ""))
+	    		userConnection.sendMessage(new Message(Command.REPLY_SUCCESS, "", Calendar.getInstance(), ""));
 	    		
 	    		nextId++;
     		}
@@ -79,9 +77,4 @@ public class Server implements Visitable{
         // It is not required (or recommended) to implement the server in
         // this runner class.
     }
-
-	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
 }
