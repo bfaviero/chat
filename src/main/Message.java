@@ -1,7 +1,6 @@
 package main;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import main.Connection.Command;
 
@@ -15,7 +14,7 @@ public class Message implements java.io.Serializable{
 	public Message(Command command, String channelName, Calendar date, String messageText){
 		this.channelName = channelName;
 		this.command = command;
-		this.calendar = calendar;
+		this.calendar = date;
 		this.messageText = messageText;
 	}
 

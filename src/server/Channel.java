@@ -4,6 +4,7 @@ import java.util.*;
 
 import main.Connection;
 import main.Message;
+import main.User;
 
 
 import client.Client;
@@ -11,10 +12,10 @@ import client.Client;
 public class Channel{
 	
     private String title;
-    private List<Connection> users = new ArrayList<Connection>();
+    private List<User> users = new ArrayList<User>();
     private List<Message> messages = new ArrayList<Message>();
 
-    public Channel(String title, Connection owner)
+    public Channel(String title, User owner)
     {
         this.title = title;
         this.users.add(owner);
@@ -23,16 +24,16 @@ public class Channel{
     {
         this.messages.add(m);
     }
-    public void addUser(Client user)
+    public void addUser(User user)
     {
         //if !this.users.has(user) { users.add(user) }
     }
-    public void removeUser(Client user)
+    public void removeUser(User user)
     {
         //if this.users.has(user) { users.remove(user) }
         //if this.users.size() == 0 { //delete Conversation }
     }
-    public void hasUser(Client user)
+    public void hasUser(User user)
     {
         //if this.users.has(user)
     }

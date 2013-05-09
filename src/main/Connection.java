@@ -1,5 +1,6 @@
 package main;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,7 +24,7 @@ public class Connection {
 		// Messages to be sent across the socket
 		protected BlockingQueue<Message> messageQueue;
 		
-		public enum Command{
+		public enum Command{ // Quit exits a channel, logout exits connection
 			LIST_USERS, LIST_CHANNELS, LOGOUT, LOGIN, MESSAGE, JOIN, QUIT,
 			REPLY_SUCCESS, REPLY_FAILURE, REPLY_ERROR, REPLY_LIST_CHANNELS, REPLY_LIST_USERS 
 		};
@@ -41,13 +42,12 @@ public class Connection {
 				try{
 					while(!Thread.currentThread().isInterrupted()){
 						// Make sure that we're dealing with a valid socket;
-						if(socket.isClosed()) break;
 						
 						Message nextMessage = (Message)ois.readObject();
 						processMessage(nextMessage);
 					}
 				}
-				catch(Exception e){
+				catch(Exception e){						
 					e.printStackTrace();
 				}
 			}
@@ -99,6 +99,10 @@ public class Connection {
 		
 		public void sendMessage(Message output){
 			messageQueue.offer(output);
+		}
+		
+		public void closeConnection(){
+			writerThread.interrupt();
 		}
 		
 		public User getUser(){

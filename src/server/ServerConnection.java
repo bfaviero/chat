@@ -1,6 +1,7 @@
 package server;
 
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.concurrent.BlockingQueue;
 
 import main.Connection;
@@ -16,7 +17,6 @@ public class ServerConnection extends Connection {
 	// public Socket socket;
 	private int userId;
 	private Server server;
-	private User user;
 	
 	// Queue of messages to send across the socket
 	private BlockingQueue<Message> messageQueue;
@@ -29,26 +29,43 @@ public class ServerConnection extends Connection {
 
 	public void processMessage(Message message){
 		System.out.println("Message received and processing in progress");
-		System.out.println(message.getDate() + ": " + message.getChannelName() + " " + message.getMessageText());
+		System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
+		Message response;
 		
 		switch(message.getCommand()){
 		case JOIN:
-			// JoinServerVisitor join = new JoinServerVisitor(message.getMessageText())
-			// join.visitServer(this.server);
+			// This user joins appropriate channel
+			this.server.addUserToChannel(this.userId, message.getChannelName());
+			response = new Message(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "");
+			sendMessage(response);
 			break;
 		case LIST_CHANNELS:
+			String channelList = this.server.getChannelList();
+			response = new Message(Command.REPLY_LIST_CHANNELS, "", Calendar.getInstance(), channelList);
+			sendMessage(response);
 			break;
 		case LIST_USERS:
+			String userList = this.server.getUserList();
+			response = new Message(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList);			
+			sendMessage(response);
 			break;
 		case LOGIN:
+			String nickname = message.getMessageText();
+			this.user.setNickname(nickname);
+			response = new Message(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "");
+			sendMessage(response);
 			break;
 		case LOGOUT:
+			// Terminate everything
 			break;
 		case MESSAGE:
+			
 			break;
 		case QUIT:
+			
 			break;
 		default:
+			System.out.println("Fell through");
 			break;
 			
 		}

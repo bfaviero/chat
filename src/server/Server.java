@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import main.Connection.Command;
@@ -19,7 +18,7 @@ public class Server{
 	private int nextId;
 	private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
-    private HashMap<String, Channel> roomMap; // Maps room names to rooms
+    private HashMap<String, Channel> channelMap; // Maps room names to channels
     
     /**
      * Instantiate a server on the specified port.
@@ -29,7 +28,7 @@ public class Server{
     	try{
     		server = new ServerSocket(port);
     		userMap = new HashMap<Integer, User>();
-    		roomMap = new HashMap<String, Channel>();
+    		channelMap = new HashMap<String, Channel>();
     		nextId = 0;
     	}
     	catch(Exception e){
@@ -54,9 +53,7 @@ public class Server{
 	    		synchronized(userMap){
 	    			userMap.put(nextId, user);
 	    		}
-	    		// Send a response that connection was successful;
-	    		userConnection.sendMessage(new Message(Command.REPLY_SUCCESS, "", Calendar.getInstance(), ""));
-	    		
+	    		// Send a response that connection was successful;	    		
 	    		nextId++;
     		}
     	}
@@ -65,6 +62,38 @@ public class Server{
     	}
     }
     
+    public void addUserToChannel(int userId, String channelName){
+    	synchronized(userMap){
+    		User user = userMap.get(userId);
+    	}
+    	// Need to create a new channel if this one doesn't exist already
+	    synchronized(channelMap){
+    		if(!channelMap.keySet().contains(channelName)){
+	    		Channel newChannel = new Channel(channelName, userMap.get(userId));
+	    		channelMap.put(channelName, newChannel);
+	    	}
+	    	else{
+	    		channelMap.get(channelName).addUser(userMap.get(userId));
+	    	}
+	    }
+    }
+    
+    // Returns a string formatted as "user1 user2 user3"
+    public String getUserList(){
+    	StringBuilder userList = new StringBuilder("");
+    	for(User u : userMap.values()){
+    		userList.append(u.nickname+" ");
+    	}
+    	return userList.toString();
+    }
+    
+    public String getChannelList(){
+    	StringBuilder channelList = new StringBuilder("");
+    	for(String channelName : channelMap.keySet()){
+    		channelList.append(channelName+" ");
+    	}
+    	return channelList.toString();
+    }
     
     /**
      * Start a chat server.
