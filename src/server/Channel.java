@@ -20,9 +20,14 @@ public class Channel{
         this.title = title;
         this.users.add(owner);
     }
-    public void addMessage(Packet m)
+    public void addMessage(Packet m, User user)
     {
         this.messages.add(m);
+        for(User u : this.users){
+        	if(u != user){
+        		u.connection.sendMessage(m);
+        	}
+        }
     }
     public void addUser(User user)
     {

@@ -48,7 +48,6 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LOGIN:
-		    System.out.println("Processing LOGIN");
 			String nickname = message.getMessageText();
 			this.user.setNickname(nickname);
 			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
@@ -58,6 +57,7 @@ public class ServerConnection extends Connection {
 			// Terminate everything
 			break;
 		case MESSAGE:
+			this.server.sendMessageToChannel(this.user, message);
 			
 			break;
 		case QUIT:
