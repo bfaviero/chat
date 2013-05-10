@@ -95,6 +95,14 @@ public class Server{
     	return channelList.toString();
     }
     
+    
+    public void sendMessageToChannel(User u, Packet message){
+    	if(channelMap.containsKey(message.getChannelName())){
+    		Channel channel = channelMap.get(message.getChannelName());
+    		channel.addMessage(message, u);
+    	}
+    }
+    
     /**
      * Start a chat server.
      */

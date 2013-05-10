@@ -17,10 +17,7 @@ public class ServerConnection extends Connection {
 	// public Socket socket;
 	private int userId;
 	private Server server;
-	
-	// Queue of messages to send across the socket
-	private BlockingQueue<Packet> messageQueue;
-	
+
 	public ServerConnection(int userId, Socket sock, Server server) {
 		super(sock);
 		this.userId = userId;
@@ -51,7 +48,6 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LOGIN:
-		    System.out.println("Processing LOGIN");
 			String nickname = message.getMessageText();
 			this.user.setNickname(nickname);
 			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
@@ -61,6 +57,7 @@ public class ServerConnection extends Connection {
 			// Terminate everything
 			break;
 		case MESSAGE:
+			this.server.sendMessageToChannel(this.user, message);
 			
 			break;
 		case QUIT:
