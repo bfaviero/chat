@@ -17,10 +17,7 @@ public class ServerConnection extends Connection {
 	// public Socket socket;
 	private int userId;
 	private Server server;
-	
-	// Queue of messages to send across the socket
-	private BlockingQueue<Message> messageQueue;
-	
+		
 	public ServerConnection(int userId, Socket sock, Server server) {
 		super(sock);
 		this.userId = userId;
