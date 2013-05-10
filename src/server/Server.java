@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import main.Connection.Command;
-import main.Message;
+import main.Packet;
 import main.User;
 
 /**

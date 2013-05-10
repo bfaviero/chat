@@ -6,36 +6,58 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import main.Message;
+import main.Packet;
 
 
 public class Client {
     private MainApp gui;
     private Client client;
     private List<String> currentRooms;
-    private HashMap<String, List<Message>> roomMessages; // Maps usernames to users.
-    private ClientConnection conn;
+    protected ConcurrentHashMap<String, List<String>> roomMessages; // Maps usernames to users.
+    protected ClientConnection conn;
+    private String user;
+    private Signin signin;
 
     public Client(){
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                gui = new MainApp(conn);
-                gui.init();
-            }
-        });
+        signin = new Signin(this);
+        signin.init();
+            
     }
     /**
      *  Listen for connections on the port specified in the Server constructor
      * @throws IOException 
      * @throws UnknownHostException 
      */
-    public void createConnection(String user) throws UnknownHostException, IOException {
-        Socket socket = new Socket("localhost", 1234);
-        conn = new ClientConnection(socket, gui);
+    public void setUser(String user) {
+        this.user = user;
+        
+    }
+    public String getUser() {
+        return user;
+    }
+    public void login(String user){
+        this.user = user;
+        Socket socket = null;
+        try {
+            socket = new Socket("localhost", 1234);
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        conn = new ClientConnection(socket, this);
+        conn.login(user);
+        MainApp gui = new MainApp(conn, this);
+        signin.frame.setVisible(false);
+        gui.init();
+        
     }
  
 }

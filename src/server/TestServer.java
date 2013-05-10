@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.util.Calendar;
 
 import main.Connection.Command;
-import main.Message;
+import main.Packet;
 
 public class TestServer implements Runnable{
 
@@ -18,19 +18,19 @@ public class TestServer implements Runnable{
 			Socket s = new Socket("localhost", 1234);
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-			Message m = new Message(Command.LOGIN, "", Calendar.getInstance(), "strelok");
-			Message n = new Message(Command.JOIN, "chess", Calendar.getInstance(), "");
-			Message l = new Message(Command.LIST_CHANNELS, "", Calendar.getInstance(), "");
-			Message o = new Message(Command.LIST_USERS, "", Calendar.getInstance(), "");
+			Packet m = new Packet(Command.LOGIN, "", Calendar.getInstance(), "strelok", "");
+			Packet n = new Packet(Command.JOIN, "chess", Calendar.getInstance(), "", "");
+			Packet l = new Packet(Command.LIST_CHANNELS, "", Calendar.getInstance(), "", "");
+			Packet o = new Packet(Command.LIST_USERS, "", Calendar.getInstance(), "", "");
 			
-			Message[] messages = {m, n, l, o};
+			Packet[] messages = {m, n, l, o};
 			try {
 				for(int i = 0; i<4; i++){
 					oos.writeObject(messages[i]);
 					Thread.sleep(500);
 				}
 				for(int i = 0; i<4; i++){
-					Message response = (Message) ois.readObject();
+					Packet response = (Packet) ois.readObject();
 					System.out.println(Thread.currentThread().getId() + "  " + response.getCommand().name() + " " + response.getChannelName() + " " + response.getMessageText());
 				}
 			} catch (IOException e) {

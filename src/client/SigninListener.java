@@ -11,33 +11,17 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class SigninListener implements ActionListener{
-    private JTextField text;
-    private JFrame frame;
-    private JLabel titleLabel;
+    private JTextField SigninText;
     private Client client;
-    public SigninListener(JTextField text, JFrame frame, JLabel titleLabel, Client client) {
-        this.text = text;
-        this.frame = frame;
-        this.titleLabel = titleLabel;
+    public SigninListener(JTextField SigninText, Client client) {
         this.client = client;
+        this.SigninText = SigninText;
         
     }
 
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        CardLayout cardLayout = (CardLayout) frame.getContentPane().getLayout();
-        titleLabel.setText("<html>Welcome to GUI Chat! Your nickname is <b>"+text.getText()+"</b></html>");
-        cardLayout.next(frame.getContentPane()); 
-        try {
-            client.createConnection(text.getText());
-        } catch (UnknownHostException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        
+        client.login(SigninText.getText());        
     }
 }
