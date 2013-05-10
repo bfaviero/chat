@@ -39,6 +39,7 @@ public class MainApp {
     private JTextField SigninText;
     private ClientConnection conn;
     private Client client;
+    JList roomList;
     JList chatList;
     JLabel roomLabel;
     /**
@@ -177,21 +178,24 @@ public class MainApp {
         verticalBox.add(roomText);
         roomText.setColumns(10);
         DefaultListModel model = new DefaultListModel();
-        JList roomList = new JList(model);
+        roomList = new JList(model);
         //ListSelectionModel listSelectionModel = roomList.getSelectionModel();
         //listSelectionModel.addListSelectionListener(new RoomListSelectionHandler(chatList, client));
         roomList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 JOptionPane.showMessageDialog(null, "clicked!");
                 synchronized(chatList) {
-                    synchronized(client.roomMessages) {
                         JList list = (JList)evt.getSource();
                         int index = list.locationToIndex(evt.getPoint());
-                        DefaultListModel model = (DefaultListModel) chatList.getModel();
+                        DefaultListModel model = (DefaultListModel) roomList.getModel();
                         String roomName = (String) model.get(index);
-                        List<String> messages = client.roomMessages.get(roomName);
+                        DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
+                        chatModel.setSize(0);
+                        List<String> messages = conn.client.roomMessages.get(roomName);
+                        roomLabel.setText(roomName);
                         String[] messagesArr = messages.toArray(new String[messages.size()]); 
-                        chatList = new JList(messagesArr);
+                        for (String message : messagesArr) {
+                            chatModel.addElement(message);
                         }
                     }
                 }

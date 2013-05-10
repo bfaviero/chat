@@ -2,6 +2,8 @@ package client;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -25,6 +27,8 @@ public class RoomTextListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) {   
+            List<String> messages = new ArrayList<String>();
+            conn.client.roomMessages.put(roomText.getText(), messages);
             String text = roomText.getText();
             DefaultListModel model = (DefaultListModel) roomList.getModel();
             model.addElement(text);
