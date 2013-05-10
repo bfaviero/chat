@@ -3,13 +3,13 @@ package protocath;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.Message;
+import main.Packet;
 
 public class ProtoRoom {
     private String title;
     //private List<UserConnection> users = new ArrayList<UserConnection>();
     private List<String> users = new ArrayList<String>();
-    private List<Message> messages = new ArrayList<Message>();
+    private List<Packet> messages = new ArrayList<Packet>();
 
     public ProtoRoom(String title, String owner)
     {
@@ -20,7 +20,7 @@ public class ProtoRoom {
     {
         return this.title;
     }
-    public void addMessage(Message m)
+    public void addMessage(Packet m)
     {
         this.messages.add(m);
     }

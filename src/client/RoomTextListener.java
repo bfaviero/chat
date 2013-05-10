@@ -29,7 +29,6 @@ public class RoomTextListener implements KeyListener {
             DefaultListModel model = (DefaultListModel) roomList.getModel();
             model.addElement(text);
             conn.join(text);
-            roomLabel.setText("Room: "+text);
             roomText.setText("");
             
         }

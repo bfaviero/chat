@@ -23,16 +23,17 @@ public class TypeListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
-            String room = roomLabel.getText();
-            String text = type.getText();
-            type.setText("");
-            DefaultListModel model = (DefaultListModel) chatList.getModel();
-            model.addElement(text);
-            conn.message(text, room);
+            synchronized(chatList) {
+                String room = roomLabel.getText();
+                String text = type.getText();
+                type.setText("");
+                DefaultListModel model = (DefaultListModel) chatList.getModel();
+                model.addElement(conn.getUsername()+": "+ text);
+                conn.client.roomMessages.get(roomLabel.getText()).add(conn.client.getUser()+": "+ text);
+
+            }
             
         }
-
-        
     }
 
     @Override

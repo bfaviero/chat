@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.concurrent.BlockingQueue;
 
 import main.Connection;
-import main.Message;
+import main.Packet;
 import main.User;
 
 
@@ -17,39 +17,41 @@ public class ServerConnection extends Connection {
 	// public Socket socket;
 	private int userId;
 	private Server server;
-		
+
 	public ServerConnection(int userId, Socket sock, Server server) {
 		super(sock);
 		this.userId = userId;
 		this.server = server;
 	}
 
-	public void processMessage(Message message){
+	public void processMessage(Packet message){
 		System.out.println("Message received and processing in progress");
+		System.out.println("Server doing its thing");
 		System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
-		Message response;
-		
+		Packet response;
+		System.out.println("LOGIN TRUE?"+(message.getCommand()==Command.LOGIN));
 		switch(message.getCommand()){
 		case JOIN:
 			// This user joins appropriate channel
 			this.server.addUserToChannel(this.userId, message.getChannelName());
-			response = new Message(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "");
+			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
 			sendMessage(response);
 			break;
 		case LIST_CHANNELS:
 			String channelList = this.server.getChannelList();
-			response = new Message(Command.REPLY_LIST_CHANNELS, "", Calendar.getInstance(), channelList);
+			response = new Packet(Command.REPLY_LIST_CHANNELS, "", Calendar.getInstance(), channelList, "");
 			sendMessage(response);
 			break;
 		case LIST_USERS:
 			String userList = this.server.getUserList();
-			response = new Message(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList);			
+			response = new Packet(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList, "");			
 			sendMessage(response);
 			break;
 		case LOGIN:
+		    System.out.println("Processing LOGIN");
 			String nickname = message.getMessageText();
 			this.user.setNickname(nickname);
-			response = new Message(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "");
+			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
 			sendMessage(response);
 			break;
 		case LOGOUT:

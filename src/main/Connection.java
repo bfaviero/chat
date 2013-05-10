@@ -9,7 +9,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import client.Client;
 
 import main.User;
 
@@ -17,12 +16,11 @@ import main.User;
 public class Connection {
 		protected Socket socket;
 		protected User user;
-		protected Client client;
 		protected Thread readerThread;
 		protected Thread writerThread;
 		
 		// Messages to be sent across the socket
-		protected BlockingQueue<Message> messageQueue;
+		protected BlockingQueue<Packet> messageQueue;
 		
 		public enum Command{ // Quit exits a channel, logout exits connection
 			LIST_USERS, LIST_CHANNELS, LOGOUT, LOGIN, MESSAGE, JOIN, QUIT,
@@ -43,7 +41,7 @@ public class Connection {
 					while(!Thread.currentThread().isInterrupted()){
 						// Make sure that we're dealing with a valid socket;
 						
-						Message nextMessage = (Message)ois.readObject();
+						Packet nextMessage = (Packet)ois.readObject();
 						processMessage(nextMessage);
 					}
 				}
@@ -67,7 +65,7 @@ public class Connection {
 				// Run until we are interrupted - read messages from the queue and write them onto our socket.
 				while(!Thread.currentThread().isInterrupted()){
 					if(!messageQueue.isEmpty()){
-						Message m = messageQueue.poll();
+						Packet m = messageQueue.poll();
 						try {
 							oos.writeObject(m);
 						} catch (IOException e) {
@@ -83,7 +81,7 @@ public class Connection {
 			if(!sock.isConnected())
 	    		throw new RuntimeException("Socket not connected");
 			
-			this.messageQueue = new LinkedBlockingQueue<Message>();
+			this.messageQueue = new LinkedBlockingQueue<Packet>();
 			this.socket = sock;
 			ConnectionReader reader = new ConnectionReader();
 			ConnectionWriter writer = new ConnectionWriter();
@@ -93,11 +91,11 @@ public class Connection {
 			writerThread.start();
 		}
 		
-		public void processMessage(Message message){
+		public void processMessage(Packet message){
 			System.out.println("Dummy processMessage message in Connection");
 		}
 		
-		public void sendMessage(Message output){
+		public void sendMessage(Packet output){
 			messageQueue.offer(output);
 		}
 		

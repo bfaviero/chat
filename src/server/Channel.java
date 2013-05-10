@@ -3,7 +3,7 @@ package server;
 import java.util.*;
 
 import main.Connection;
-import main.Message;
+import main.Packet;
 import main.User;
 
 
@@ -13,14 +13,14 @@ public class Channel{
 	
     private String title;
     private List<User> users = new ArrayList<User>();
-    private List<Message> messages = new ArrayList<Message>();
+    private List<Packet> messages = new ArrayList<Packet>();
 
     public Channel(String title, User owner)
     {
         this.title = title;
         this.users.add(owner);
     }
-    public void addMessage(Message m)
+    public void addMessage(Packet m)
     {
         this.messages.add(m);
     }

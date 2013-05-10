@@ -4,18 +4,19 @@ import java.util.Calendar;
 
 import main.Connection.Command;
 
-public class Message implements java.io.Serializable{
+public class Packet implements java.io.Serializable{
 	private static final long serialVersionUID = -5296132268968878736L;
 	private Command command;	
 	private String channelName;
 	private Calendar calendar;
 	private String messageText;
-	
-	public Message(Command command, String channelName, Calendar date, String messageText){
+	private String author;
+	public Packet(Command command, String channelName, Calendar date, String messageText, String author){
 		this.channelName = channelName;
 		this.command = command;
 		this.calendar = date;
 		this.messageText = messageText;
+		this.author = author;
 	}
 
 
@@ -50,5 +51,15 @@ public class Message implements java.io.Serializable{
 	public void setMessageText(String newMessage){
 		this.messageText = newMessage;
 	}
+
+
+    public String getAuthor() {
+        return author;
+    }
+
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 	
 }

@@ -3,11 +3,16 @@ package client;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.JList;
 import javax.swing.Box;
@@ -18,6 +23,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.Component;
 import java.awt.CardLayout;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -33,6 +39,8 @@ public class MainApp {
     private JTextField SigninText;
     private ClientConnection conn;
     private Client client;
+    JList chatList;
+    JLabel roomLabel;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -49,12 +57,13 @@ public class MainApp {
             }
         });
     }
-
     /**
      * Create the application.
      */
-    public MainApp(ClientConnection conn) {
+    public MainApp(ClientConnection conn, Client client) {
         this.conn = conn;
+        this.client = client;
+        
     }
 
     /**
@@ -79,32 +88,7 @@ public class MainApp {
          * 
          * 
          */
-        JPanel signin_panel = new JPanel();
-        frame.getContentPane().add(signin_panel, "name_1367989163741677000");
-        signin_panel.setLayout(new BoxLayout(signin_panel, BoxLayout.Y_AXIS));
-        
-        JLabel welcome_label = new JLabel("Welcome to GUI Chat!");
-        welcome_label.setAlignmentY(0.0f);
-        welcome_label.setAlignmentX(0.5f);
-        welcome_label.setHorizontalAlignment(SwingConstants.CENTER);
-        signin_panel.add(welcome_label);
-        
-        Component verticalStrut = Box.createVerticalStrut(20);
-        signin_panel.add(verticalStrut);
-        
-        Box signin_box = Box.createHorizontalBox();
-        signin_panel.add(signin_box);
-        
-        JLabel signin_label = new JLabel("Type your username:");
-        signin_box.add(signin_label);
-        
-        SigninText = new JTextField();
-        signin_box.add(SigninText);
-        SigninText.setColumns(10);
-        SigninText.setMaximumSize(SigninText.getPreferredSize() );
-        
-        JButton join_button = new JButton("Join Server");
-        join_button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         /**
          * Go to the main app when the button is clicked
          */
@@ -159,9 +143,11 @@ public class MainApp {
         chatPanel.setLayout(new BorderLayout(0, 0));
         
         DefaultListModel chatListModel = new DefaultListModel();
-        JList chatList = new JList(chatListModel);
+        chatList = new JList(chatListModel);
+
         JScrollPane scrollPane = new JScrollPane(chatList);
         chatPanel.add(scrollPane, BorderLayout.CENTER);
+        
 
         
         Box horizontalBox = Box.createHorizontalBox();
@@ -176,7 +162,7 @@ public class MainApp {
         type = new JTextField();
         type.setColumns(10);
 
-        JLabel roomLabel = new JLabel("New label");
+        roomLabel = new JLabel("New label");
         chatPanel.add(roomLabel, BorderLayout.NORTH);
         
         /*
@@ -187,16 +173,29 @@ public class MainApp {
          * 
          */
 
-        SigninListener signinListener = new SigninListener(SigninText, frame, title_label, client);
-        join_button.addActionListener(signinListener);
-        signin_panel.add(join_button);
-                
-                        
         roomText = new JTextField();
         verticalBox.add(roomText);
         roomText.setColumns(10);
         DefaultListModel model = new DefaultListModel();
         JList roomList = new JList(model);
+        //ListSelectionModel listSelectionModel = roomList.getSelectionModel();
+        //listSelectionModel.addListSelectionListener(new RoomListSelectionHandler(chatList, client));
+        roomList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JOptionPane.showMessageDialog(null, "clicked!");
+                synchronized(chatList) {
+                    synchronized(client.roomMessages) {
+                        JList list = (JList)evt.getSource();
+                        int index = list.locationToIndex(evt.getPoint());
+                        DefaultListModel model = (DefaultListModel) chatList.getModel();
+                        String roomName = (String) model.get(index);
+                        List<String> messages = client.roomMessages.get(roomName);
+                        String[] messagesArr = messages.toArray(new String[messages.size()]); 
+                        chatList = new JList(messagesArr);
+                        }
+                    }
+                }
+        });
         roomList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         verticalBox.add(roomList);
         RoomTextListener roomTextListener = new RoomTextListener(roomList, roomText, roomLabel, conn);
@@ -207,6 +206,7 @@ public class MainApp {
         TypeListener typeListener = new TypeListener(chatList, type, roomLabel,  conn);
         type.addKeyListener(typeListener);
         horizontalBox.add(type);
+        
         
        
 
