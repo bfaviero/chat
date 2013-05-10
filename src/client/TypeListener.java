@@ -2,6 +2,7 @@ package client;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -29,7 +30,11 @@ public class TypeListener implements KeyListener {
                 type.setText("");
                 DefaultListModel model = (DefaultListModel) chatList.getModel();
                 model.addElement(conn.getUsername()+": "+ text);
-                conn.client.roomMessages.get(roomLabel.getText()).add(conn.client.getUser()+": "+ text);
+                String user = conn.client.getUser();
+                System.out.println(roomLabel.getText());
+                System.out.println("ROOM NAME");
+                List<String> messages = conn.client.roomMessages.get(roomLabel.getText());
+                messages.add(user+": "+ text);
 
             }
             

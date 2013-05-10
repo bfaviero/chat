@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,13 +18,15 @@ import main.Packet;
 public class Client {
     private MainApp gui;
     private Client client;
-    private List<String> currentRooms;
+    protected List<String> currentRooms;
     protected ConcurrentHashMap<String, List<String>> roomMessages; // Maps usernames to users.
     protected ClientConnection conn;
     private String user;
     private Signin signin;
 
     public Client(){
+        this.roomMessages = new ConcurrentHashMap<String, List<String>>();
+        this.currentRooms = new ArrayList<String>();
         signin = new Signin(this);
         signin.init();
             
