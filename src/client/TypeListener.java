@@ -2,12 +2,16 @@ package client;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextField;
+
+import main.Packet;
+import main.Connection.Command;
 
 public class TypeListener implements KeyListener {
     private JList chatList;
@@ -30,12 +34,11 @@ public class TypeListener implements KeyListener {
                 type.setText("");
                 DefaultListModel model = (DefaultListModel) chatList.getModel();
                 model.addElement(conn.getUsername()+": "+ text);
-                String user = conn.client.getUser();
-                System.out.println(roomLabel.getText());
-                System.out.println("ROOM NAME");
+                String user = conn.getUsername();
                 List<String> messages = conn.client.roomMessages.get(roomLabel.getText());
                 messages.add(user+": "+ text);
-
+                Packet message = new Packet(Command.MESSAGE, room, Calendar.getInstance(), text, user);
+                conn.sendMessage(message);
             }
             
         }

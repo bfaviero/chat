@@ -49,11 +49,13 @@ public class ClientConnection extends Connection {
         Packet response;
         switch(message.getCommand()){
         case LIST_CHANNELS:
+            
             break;
         case REPLY_SUCCESS:
+            System.out.print("Reply success");
             break;
         case LOGIN:
-            
+            System.out.print("Logged in?");
             break;
         case JOIN:
             response = new Packet(Command.LOGIN, "", Calendar.getInstance(), client.getUser(), "");
@@ -64,12 +66,14 @@ public class ClientConnection extends Connection {
         case LIST_USERS:
             break;
         case MESSAGE:
+            System.out.println("receiving message");
             String mess = client.getUser()+": "+ message.getMessageText();
             if (gui.roomLabel.getText().equals(message.getChannelName())) {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
                     DefaultListModel model = (DefaultListModel) chatList.getModel();
                     model.addElement(mess);
+                    chatList.repaint();
                 }
             }
             client.roomMessages.get(message.getChannelName()).add(mess);
