@@ -40,7 +40,9 @@ public class ClientConnection extends Connection {
     public String getUsername() {
         return client.getUser();
     }
-    
+    public List<String> getRoomMessages(String roomName) {
+        return client.roomMessages.get(roomName);
+    }
     public void processMessage(Packet message){
         System.out.println("Message received and processing in progress");
         System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
