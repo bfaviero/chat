@@ -25,11 +25,7 @@ public class ServerConnection extends Connection {
 	}
 
 	public void processMessage(Packet message){
-		System.out.println("Message received and processing in progress");
-		System.out.println("Server doing its thing");
-		System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
 		Packet response;
-		System.out.println("LOGIN TRUE?"+(message.getCommand()==Command.LOGIN));
 		switch(message.getCommand()){
 		case JOIN:
 			// This user joins appropriate channel
