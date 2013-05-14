@@ -54,14 +54,14 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LOGOUT:
-			// Terminate everything
+			// How do we deal with logout??
+			
 			break;
 		case MESSAGE:
 			this.server.sendMessageToChannel(this.user, message);
-			
 			break;
 		case QUIT:
-			
+			this.server.removeUserFromChannel(this.user, message.getChannelName());
 			break;
 		default:
 			System.out.println("Fell through");

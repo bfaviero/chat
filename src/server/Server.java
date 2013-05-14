@@ -78,6 +78,13 @@ public class Server{
 	    }
     }
     
+    public void removeUserFromChannel(User user, String channelName){
+    	if(channelMap.containsKey(channelName)){
+    		Channel channel = channelMap.get(channelName);
+    		channel.removeUser(user);
+    	}
+    }
+    
     // Returns a string formatted as "user1 user2 user3"
     public String getUserList(){
     	StringBuilder userList = new StringBuilder("");
