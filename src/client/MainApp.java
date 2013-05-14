@@ -41,8 +41,9 @@ public class MainApp {
     private JTextField type;
     private JTextField SigninText;
     private ClientConnection conn;
-    JList chatList;
-    JLabel roomLabel;
+    public JTable roomTable;
+    public JList chatList;
+    public JLabel roomLabel;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -183,7 +184,7 @@ public class MainApp {
         
         DefaultTableModel roomModel = new DefaultTableModel();
         roomModel.setDataVector(new Object[][] {}, new Object[] { "leave", "join", "name" });
-        JTable roomTable = new JTable(roomModel);
+        roomTable = new JTable(roomModel);
         roomTable.getColumnModel().getColumn(0).setPreferredWidth(27);
         roomTable.getColumnModel().getColumn(1).setPreferredWidth(27);
 
@@ -201,7 +202,7 @@ public class MainApp {
         verticalBox.add(roomTable);
         
         
-        TypeListener typeListener = new TypeListener(chatList, type, roomLabel,  conn);
+        TypeListener typeListener = new TypeListener(chatList, type, roomTable, roomLabel, conn);
         type.addKeyListener(typeListener);
         horizontalBox.add(type);
         

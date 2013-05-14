@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import main.Packet;
@@ -18,11 +19,14 @@ public class TypeListener implements KeyListener {
     private JTextField type;
     private ClientConnection conn; 
     private JLabel roomLabel;
-    public TypeListener(JList chatList, JTextField type, JLabel roomLabel, ClientConnection conn) {
+    private JTable roomTable;
+    
+    public TypeListener(JList chatList, JTextField type, JTable roomTable, JLabel roomLabel, ClientConnection conn) {
         this.chatList = chatList;
         this.type = type;
         this.roomLabel = roomLabel;
         this.conn = conn;
+        this.roomTable = roomTable;
     }
 
     @Override
@@ -35,7 +39,9 @@ public class TypeListener implements KeyListener {
                 DefaultListModel model = (DefaultListModel) chatList.getModel();
                 model.addElement(conn.getUsername()+": "+ text);
                 String user = conn.getUsername();
-                List<String> messages = conn.client.roomMessages.get(roomLabel.getText());
+                
+                List<String> messages = conn.client.roomMessages.get(room);
+                
                 messages.add(user+": "+ text);
                 Packet message = new Packet(Command.MESSAGE, room, Calendar.getInstance(), text, user);
                 conn.sendMessage(message);

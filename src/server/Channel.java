@@ -33,7 +33,8 @@ public class Channel{
     }
     public void addUser(User user)
     {
-        //if !this.users.has(user) { users.add(user) }
+        if(!this.users.contains(user))
+        	users.add(user);
     }
     public void removeUser(User user)
     {

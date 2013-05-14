@@ -34,6 +34,7 @@ public class RoomTextListener implements KeyListener {
             String text = roomText.getText();
             DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
             model.addRow(new Object[]{"x", ">", text});
+            this.roomLabel.setText(text);
             conn.join(text);
             roomText.setText("");
             

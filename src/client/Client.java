@@ -57,7 +57,8 @@ public class Client {
         }
         conn = new ClientConnection(socket, this);
         conn.login(user);
-        MainApp gui = new MainApp(conn );
+        MainApp gui = new MainApp(conn);
+        conn.setGUI(gui);
         signin.frame.setVisible(false);
         gui.init();
         

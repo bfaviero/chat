@@ -24,9 +24,11 @@ public class ServerConnection extends Connection {
 
 	public void processMessage(Packet message){
 		Packet response;
+		System.out.println(message.getCommand().name() + " " + message.getChannelName());
 		switch(message.getCommand()){
 		case JOIN:
 			// This user joins appropriate channel
+			System.out.println("CALLING addUserToChannel with: " + String.valueOf(this.userId) +" " + message.getChannelName());
 			this.server.addUserToChannel(this.userId, message.getChannelName());
 			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
 			sendMessage(response);
@@ -53,6 +55,7 @@ public class ServerConnection extends Connection {
 			break;
 		case MESSAGE:
 		    System.out.println("Received message");
+		    System.out.println(message.getChannelName() + " " + message.getMessageText());
 			this.server.sendMessageToChannel(this.user, message);
 			break;
 		case QUIT:

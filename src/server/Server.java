@@ -100,10 +100,10 @@ public class Server{
     
     public void addUserToChannel(int userId, String channelName){
     	// Need to create a new channel if this one doesn't exist already
-    	if(channelMap.containsKey(channelName))
-    		channelMap.get(channelName).addUser(userMap.get(userId));
-    	else
+    	if(!channelMap.containsKey(channelName))
     		createChannel(channelName, userId);
+    	channelMap.get(channelName).addUser(userMap.get(userId));
+    		
     }
     
     public void removeUserFromChannel(User user, String channelName){
@@ -132,6 +132,9 @@ public class Server{
     }
     
     public void sendMessageToChannel(User u, Packet message){
+    	System.out.println(u.nickname);
+    	System.out.println(this.channelMap.keySet().size());
+    	System.out.println(message.getChannelName() + " " + message.getMessageText());
         System.out.println("Send message to channel");
     	if(channelMap.containsKey(message.getChannelName())){
     	    System.out.println("channelMap contains channelName "+message.getChannelName());

@@ -20,22 +20,28 @@ import main.Connection.Command;
 public class ClientConnection extends Connection {
     Client client;
     private MainApp gui;
+    
     public ClientConnection(Socket socket, Client client) {
         super(socket);
         this.client = client;
     }
+    public void setGUI(MainApp gui){
+    	this.gui = gui;
+    }
+    
     public void join(String room) {
+    	System.out.println("Sent join request, room: " + room);
         Packet m = new Packet(Command.JOIN, room, Calendar.getInstance(), "", "");
-        processMessage(m);
+        sendMessage(m);
     }
     public void login(String userName) {
         System.out.println("Connection's got this shit");
         Packet m = new Packet(Command.LOGIN, "", Calendar.getInstance(), userName, "");
-        processMessage(m);
+        sendMessage(m);
     }
     public void message(String message, String room) {
         Packet m = new Packet(Command.MESSAGE, room, Calendar.getInstance(), message,  "");
-        processMessage(m);
+        sendMessage(m);
     }
     public String getUsername() {
         return client.getUser();
@@ -67,7 +73,7 @@ public class ClientConnection extends Connection {
             break;
         case MESSAGE:
             System.out.println("receiving message");
-            String mess = client.getUser()+": "+ message.getMessageText();
+            String mess = message.getAuthor()+": "+ message.getMessageText();
             if (gui.roomLabel.getText().equals(message.getChannelName())) {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
