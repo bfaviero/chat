@@ -18,6 +18,7 @@ public class Connection {
 		protected User user;
 		protected Thread readerThread;
 		protected Thread writerThread;
+		protected boolean userDisconnected = false;
 		
 		// Messages to be sent across the socket
 		protected BlockingQueue<Packet> messageQueue;
@@ -38,11 +39,14 @@ public class Connection {
 				}
 				
 				try{
-					while(!Thread.currentThread().isInterrupted()){
+					while(!userDisconnected && !Thread.currentThread().isInterrupted()){
 						// Make sure that we're dealing with a valid socket;
 						
 						Packet nextMessage = (Packet)ois.readObject();
 						processMessage(nextMessage);
+					}
+					if(userDisconnected){
+						processUserDisconnect();
 					}
 				}
 				catch(Exception e){						
@@ -63,7 +67,7 @@ public class Connection {
 				}
 				
 				// Run until we are interrupted - read messages from the queue and write them onto our socket.
-				while(!Thread.currentThread().isInterrupted()){
+				while(!userDisconnected && !Thread.currentThread().isInterrupted()){
 					if(!messageQueue.isEmpty()){
 						Packet m = messageQueue.poll();
 						try {
@@ -109,5 +113,9 @@ public class Connection {
 		
 		public void setUser(User user){
 			this.user = user;
+		}
+		
+		public void processUserDisconnect(){
+			// Overwritten in child class
 		}
 }

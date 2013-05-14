@@ -35,12 +35,17 @@ public class Channel{
     }
     public void removeUser(User user)
     {
-        //if this.users.has(user) { users.remove(user) }
-        //if this.users.size() == 0 { //delete Conversation }
+        if(this.hasUser(user))
+        	this.users.remove(user);
     }
-    public void hasUser(User user)
-    {
-        //if this.users.has(user)
+
+    // Rep invariant: number of users in the current room > 0;
+    public boolean getRepInvariant(){
+    	return this.users.size() > 0;
+    }
+    
+    public boolean hasUser(User user){
+        return this.users.contains(user);
     }
 
 }

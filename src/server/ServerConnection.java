@@ -54,8 +54,8 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LOGOUT:
-			// How do we deal with logout??
-			
+			this.userDisconnected = true;	
+			// How do we deal with logout - threads will kill themselves
 			break;
 		case MESSAGE:
 			this.server.sendMessageToChannel(this.user, message);
@@ -68,6 +68,10 @@ public class ServerConnection extends Connection {
 			break;
 			
 		}
+	}
+	
+	public void processUserDisconnect(){
+		this.server.notifyServerOfUserDisconnect(this.userId);
 	}
 	
 	public void closeSockets(){

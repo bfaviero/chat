@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import main.Connection.Command;
 import main.Packet;
@@ -19,6 +21,22 @@ public class Server{
 	private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
     private HashMap<String, Channel> channelMap; // Maps room names to channels
+    private Thread channelMonitor;
+    
+    public class ChannelMonitor implements Runnable{
+		@Override
+		public void run() {
+			while(true){
+				for(Iterator<Map.Entry<String, Channel>> it = channelMap.entrySet().iterator(); it.hasNext();){
+					Map.Entry<String, Channel> entry = it.next();
+					synchronized(channelMap){
+						if(!entry.getValue().getRepInvariant())
+							channelMap.remove(entry.getKey());
+					}
+				}
+			}
+		}
+    }
     
     /**
      * Instantiate a server on the specified port.
@@ -30,11 +48,14 @@ public class Server{
     		userMap = new HashMap<Integer, User>();
     		channelMap = new HashMap<String, Channel>();
     		nextId = 0;
+    		channelMonitor = new Thread(new ChannelMonitor());
+    		channelMonitor.start();
     	}
     	catch(Exception e){
     		e.printStackTrace();   		
     	}
     }
+   
     
     /**
      *  Listen for connections on the port specified in the Server constructor
@@ -102,11 +123,20 @@ public class Server{
     	return channelList.toString();
     }
     
-    
     public void sendMessageToChannel(User u, Packet message){
     	if(channelMap.containsKey(message.getChannelName())){
     		Channel channel = channelMap.get(message.getChannelName());
     		channel.addMessage(message, u);
+    	}
+    }
+    
+    public void notifyServerOfUserDisconnect(int userId){
+    	User u = userMap.get(userId);
+    	for(String channel : channelMap.keySet()){
+    		Channel c = channelMap.get(channel);
+    		if(c.hasUser(u)){
+    			c.removeUser(u);
+    		}
     	}
     }
     
