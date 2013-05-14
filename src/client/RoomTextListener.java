@@ -9,16 +9,18 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 
 public class RoomTextListener implements KeyListener {
-    private JList roomList;
+    private JTable roomTable;
     private JTextField roomText;
     private ClientConnection conn;
     private JLabel roomLabel;
-    public RoomTextListener(JList roomList, JTextField roomText, JLabel roomLabel, ClientConnection conn) {
-        this.roomList = roomList;
+    public RoomTextListener(JTable roomTable, JTextField roomText, JLabel roomLabel, ClientConnection conn) {
+        this.roomTable = roomTable;
         this.roomText = roomText;
         this.conn = conn;
         this.roomLabel = roomLabel;
@@ -30,8 +32,8 @@ public class RoomTextListener implements KeyListener {
             List<String> messages = new ArrayList<String>();
             conn.client.roomMessages.put(roomText.getText(), messages);
             String text = roomText.getText();
-            DefaultListModel model = (DefaultListModel) roomList.getModel();
-            model.addElement(text);
+            DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+            model.addRow(new Object[]{"x", ">", text});
             conn.join(text);
             roomText.setText("");
             

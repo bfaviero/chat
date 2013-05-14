@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import java.awt.BorderLayout;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -30,6 +31,8 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 import javax.swing.AbstractListModel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class MainApp {
 
@@ -38,7 +41,6 @@ public class MainApp {
     private JTextField type;
     private JTextField SigninText;
     private ClientConnection conn;
-    JList roomList;
     JList chatList;
     JLabel roomLabel;
     /**
@@ -173,36 +175,31 @@ public class MainApp {
          */
 
         roomText = new JTextField();
-        verticalBox.add(roomText);
+        
         roomText.setColumns(10);
-        DefaultListModel model = new DefaultListModel();
-        roomList = new JList(model);
-        //ListSelectionModel listSelectionModel = roomList.getSelectionModel();
-        //listSelectionModel.addListSelectionListener(new RoomListSelectionHandler(chatList, client));
-        roomList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                synchronized(chatList) {
-                        JList list = (JList)evt.getSource();
-                        int index = list.locationToIndex(evt.getPoint());
-                        DefaultListModel model = (DefaultListModel) roomList.getModel();
-                        String roomName = (String) model.get(index);
-                        DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
-                        chatModel.setSize(0);
-                        List<String> messages = conn.getRoomMessages(roomName);
-                        roomLabel.setText(roomName);
-                        String[] messagesArr = messages.toArray(new String[messages.size()]); 
-                        for (String message : messagesArr) {
-                            chatModel.addElement(message);
-                        }
-                    }
-                }
-        });
-        roomList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-        verticalBox.add(roomList);
-        RoomTextListener roomTextListener = new RoomTextListener(roomList, roomText, roomLabel, conn);
-
-        roomText.addKeyListener(roomTextListener);
+  
         roomText.setMaximumSize(roomText.getPreferredSize() );
+        
+        
+        DefaultTableModel roomModel = new DefaultTableModel();
+        roomModel.setDataVector(new Object[][] {}, new Object[] { "leave", "join", "name" });
+        JTable roomTable = new JTable(roomModel);
+        roomTable.getColumnModel().getColumn(0).setPreferredWidth(27);
+        roomTable.getColumnModel().getColumn(1).setPreferredWidth(27);
+
+        roomTable.getColumn("leave").setCellRenderer(new ButtonRenderer());
+        roomTable.getColumn("leave").setCellEditor(
+            new ButtonEditor(new JCheckBox(), roomLabel));
+        roomTable.getColumn("join").setCellRenderer(new ButtonRenderer());
+        roomTable.getColumn("join").setCellEditor(
+            new JoinButtonEditor(new JCheckBox(), roomLabel, conn, chatList));
+        //JScrollPane roomPane = new JScrollPane();
+        roomText.addKeyListener(new RoomTextListener(roomTable, roomText, roomLabel, conn));
+        verticalBox.add(roomText);
+        verticalBox.add(roomTable);
+        //verticalBox.add(roomPane);
+        verticalBox.add(roomTable);
+        
         
         TypeListener typeListener = new TypeListener(chatList, type, roomLabel,  conn);
         type.addKeyListener(typeListener);

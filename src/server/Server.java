@@ -124,7 +124,9 @@ public class Server{
     }
     
     public void sendMessageToChannel(User u, Packet message){
+        System.out.println("Send message to channel");
     	if(channelMap.containsKey(message.getChannelName())){
+    	    System.out.println("channelMap contains channelName "+message.getChannelName());
     		Channel channel = channelMap.get(message.getChannelName());
     		channel.addMessage(message, u);
     	}

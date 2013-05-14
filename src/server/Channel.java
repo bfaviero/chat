@@ -23,8 +23,10 @@ public class Channel{
     public void addMessage(Packet m, User user)
     {
         this.messages.add(m);
+        System.out.println("trying to send");
         for(User u : this.users){
         	if(u != user){
+                System.out.println("Sent message to "+u.nickname);
         		u.connection.sendMessage(m);
         	}
         }

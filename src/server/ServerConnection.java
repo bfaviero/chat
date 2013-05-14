@@ -54,6 +54,7 @@ public class ServerConnection extends Connection {
 			// How do we deal with logout - threads will kill themselves
 			break;
 		case MESSAGE:
+		    System.out.println("Received message");
 			this.server.sendMessageToChannel(this.user, message);
 			break;
 		case QUIT:
