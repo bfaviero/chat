@@ -40,7 +40,6 @@ public class TypeListener implements KeyListener {
                 Packet message = new Packet(Command.MESSAGE, room, Calendar.getInstance(), text, user);
                 conn.sendMessage(message);
             }
-            
         }
     }
 

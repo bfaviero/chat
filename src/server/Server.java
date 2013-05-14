@@ -17,6 +17,7 @@ import main.User;
  */
 
 public class Server{
+	private boolean debug; // For testing only
 	private int nextId;
 	private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
@@ -26,7 +27,7 @@ public class Server{
     public class ChannelMonitor implements Runnable{
 		@Override
 		public void run() {
-			while(true){
+			while(!Thread.currentThread().isInterrupted()){
 				for(Iterator<Map.Entry<String, Channel>> it = channelMap.entrySet().iterator(); it.hasNext();){
 					Map.Entry<String, Channel> entry = it.next();
 					synchronized(channelMap){
@@ -42,8 +43,9 @@ public class Server{
      * Instantiate a server on the specified port.
      * @param port The port to use for our server
      */
-    public Server(int port) {
+    public Server(int port, boolean debug) {
     	try{
+    		this.debug = debug;
     		server = new ServerSocket(port);
     		userMap = new HashMap<Integer, User>();
     		channelMap = new HashMap<String, Channel>();
@@ -64,18 +66,7 @@ public class Server{
     	try{    		
     		while(true){
 	    		Socket socket = server.accept();
-	    		String nickname = new String("Guest_" + String.valueOf(nextId));
-	    		
-	    		// Create a server connection and connect it to the appropriate user.
-	    		ServerConnection userConnection = new ServerConnection(nextId, socket, this);
-	    		User user = new User(nextId, nickname, userConnection);
-	    		userConnection.setUser(user);
-	    		
-	    		synchronized(userMap){
-	    			userMap.put(nextId, user);
-	    		}
-	    		// Send a response that connection was successful;	    		
-	    		nextId++;
+	    		makeUserFromSocket(socket);
     		}
     	}
     	catch(IOException e){
@@ -83,20 +74,36 @@ public class Server{
     	}
     }
     
-    public void addUserToChannel(int userId, String channelName){
-    	synchronized(userMap){
-    		User user = userMap.get(userId);
+    public void makeUserFromSocket(Socket socket){
+    	String nickname = new String("Guest_" + String.valueOf(nextId));
+		
+		// Create a server connection and connect it to the appropriate user.
+		ServerConnection userConnection = new ServerConnection(nextId, socket, this);
+		User user = new User(nextId, nickname, userConnection);
+		userConnection.setUser(user);
+		
+		synchronized(userMap){
+			userMap.put(nextId, user);
+		}
+		// Send a response that connection was successful;	    		
+		nextId++;
+    }
+    
+    public Channel createChannel(String channelName, int firstUserId){
+    	Channel newChannel;
+    	synchronized(channelMap){
+	    	newChannel = new Channel(channelName, userMap.get(firstUserId));
+	    	channelMap.put(channelName, newChannel);
     	}
+    	return newChannel;
+    }
+    
+    public void addUserToChannel(int userId, String channelName){
     	// Need to create a new channel if this one doesn't exist already
-	    synchronized(channelMap){
-    		if(!channelMap.keySet().contains(channelName)){
-	    		Channel newChannel = new Channel(channelName, userMap.get(userId));
-	    		channelMap.put(channelName, newChannel);
-	    	}
-	    	else{
-	    		channelMap.get(channelName).addUser(userMap.get(userId));
-	    	}
-	    }
+    	if(channelMap.containsKey(channelName))
+    		channelMap.get(channelName).addUser(userMap.get(userId));
+    	else
+    		createChannel(channelName, userId);
     }
     
     public void removeUserFromChannel(User user, String channelName){
@@ -108,6 +115,7 @@ public class Server{
     
     // Returns a string formatted as "user1 user2 user3"
     public String getUserList(){
+    	System.out.println(userMap.size());
     	StringBuilder userList = new StringBuilder("");
     	for(User u : userMap.values()){
     		userList.append(u.nickname+" ");
@@ -120,7 +128,7 @@ public class Server{
     	for(String channelName : channelMap.keySet()){
     		channelList.append(channelName+" ");
     	}
-    	return channelList.toString();
+    	return channelList.toString().trim();
     }
     
     public void sendMessageToChannel(User u, Packet message){
@@ -142,11 +150,19 @@ public class Server{
     	}
     }
     
+    public Channel getChannel(String channelName){
+    	return channelMap.get(channelName);
+    }
+    
+    public void terminate() throws IOException{
+    	this.server.close();
+    	this.channelMonitor.interrupt();
+    }
     /**
      * Start a chat server.
      */
     public static void main(String[] args) {
-        Server server = new Server(1234);
+        Server server = new Server(1234, false);
         server.listen();
         
         // YOUR CODE HERE

@@ -15,7 +15,6 @@ public class ProtoServer {
     private HashMap<String, ProtoRoom> roomMap;  //maps roomname to room
     
     private HashMap<Integer, String> socketUserMap;  //maps socket/client ID to username
-    
     private HashMap<Integer, Socket> clientSocketMap;  //maps socket/client ID to socket
     private List<PrintWriter> outputStreams;   
     private HashMap<Integer, PrintWriter> clientOutputMap;

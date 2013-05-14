@@ -50,4 +50,7 @@ public class Channel{
         return this.users.contains(user);
     }
 
+    public int getUserCount(){
+    	return this.users.size();
+    }
 }
