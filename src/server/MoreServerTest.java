@@ -9,12 +9,12 @@ import junit.framework.TestCase;
 import main.Packet;
 import main.User;
 
-import org.junit.Test;
+import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.*;
 
-public class MoreServerTest {
-    
+public class MoreServerTest{
+/**    
     private final int PORT = 1234;
     private Server server;
     private Socket user0;
@@ -22,47 +22,44 @@ public class MoreServerTest {
     private Socket user2;
     private Thread t;
     
-    @Test
-    void start()
+    @Before
+    public void setUp() throws Exception
     {
-        try {
-            server = new Server(PORT, true);
-            user0 = new Socket();
-            user1 = new Socket();
-            user2 = new Socket();
-        } catch (Exception e){
-            System.out.println(e.getStackTrace());
-            assertEquals(1, 0);
-        }
+        server = new Server(PORT, true);
+        user0 = new Socket();
+        user1 = new Socket();
+        user2 = new Socket();
+        server.makeUserFromSocket(user0);
+        server.makeUserFromSocket(user1);
         
     }
     
-    void end() throws Exception
-    {
-        server.terminate();
-        user0.close();
-        user1.close();
-    }
-    
+*/    
     /**
      * Check that upon initialization a new server has no users nor channels
-     */
+     
     @Test
-    void checkStart()
+    public void checkStart()
     {
+        
         assertEquals(server.getUserList(), "");
         assertEquals(server.getChannelList(), "");
+        
     }
+    */
     
     /**
      * Login with two clients to start, create two channels.
      * Double-check that these are the only objects in the server HashMaps.  
-     */
+     
     @Test
-    void logIn()
+    public void logIn()
     {
-        server.makeUserFromSocket(user0);
-        server.makeUserFromSocket(user1);
+        
+        server.createChannel("chess", 0);
+        //System.out.println(server.getUserList());
+        assertEquals(server.getUserList().split(" ").length, 2);
+        assertEquals(server.getChannelList().split(" ").length, 1);
     }
     
     /**
