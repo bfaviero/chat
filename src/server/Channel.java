@@ -87,4 +87,18 @@ public class Channel{
     public int getUserCount(){
     	return this.users.size();
     }
+    
+    /**
+     * Get a String representation of all the messages in this Channel,
+     * delineated by "\n" character.  
+     * @return String containing all messages of this Channel
+     */
+    public String getMessages() {
+        //TODO: Implement Date/User filter?
+        StringBuilder channelMessages = new StringBuilder("");
+        for(Packet m : this.messages){
+            channelMessages.append(m.getMessageText() + "\n");
+        }
+        return channelMessages.toString().trim();
+    }
 }

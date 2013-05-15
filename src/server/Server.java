@@ -165,6 +165,22 @@ public class Server{
     	return channelList.toString().trim();
     }
     
+    /**
+     * Returns a string representation of all messages on a Channel.
+     * @return a string of Channel messages separated by "\n".  
+     */
+    public String getChannelMessages(String channelName){
+        //Because of .trim() at end of channel.getMessages(), should be impossible
+        //for an existing channel to return "\n" as their String of messages
+        //so can use this to determine if the specified channelName exists on the server.
+        String messages = "\n";
+        if(channelMap.containsKey(channelName)){
+            messages = channelMap.get(channelName).getMessages();
+        }
+        
+        return messages;
+    }
+    
     //TODO: Make sure User parameter matches (user vs. int userID)
     /**
      * Sends a Message to a requested Channel from a User, if the Channel exists.  
