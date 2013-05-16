@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
@@ -34,17 +35,29 @@ public class TypeListener implements KeyListener {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
             synchronized(chatList) {
                 String room = roomLabel.getText();
-                String text = type.getText();
-                type.setText("");
-                DefaultListModel model = (DefaultListModel) chatList.getModel();
-                model.addElement(conn.getUsername()+": "+ text);
-                String user = conn.getUsername();
-                
-                List<String> messages = conn.client.roomMessages.get(room);
-                
-                messages.add(user+": "+ text);
-                Packet message = new Packet(Command.MESSAGE, room, Calendar.getInstance(), text, user);
-                conn.sendMessage(message);
+                if (room.equals("Room Name")) {
+                    JOptionPane.showMessageDialog(null, "Please join a room first!");
+                }
+                else {
+                    String text = type.getText();
+                    type.setText("");
+                    DefaultListModel model = (DefaultListModel) chatList.getModel();
+                    model.addElement(conn.getUsername()+": "+ text);
+                    String user = conn.getUsername();
+                    
+                    List<String> messages = conn.getMessages(room);
+                    Packet message = new Packet(Command.MESSAGE, room, Calendar.getInstance(), text, user);
+                    if (messages.size() > 1) {
+                        String lastMessage = messages.get(messages.size()-1);
+                        if (lastMessage.substring(0, lastMessage.indexOf(":")).equals(user)) {
+                            text = user+": "+text;
+                        }
+                    }
+                    else text = user+": "+text;
+                    
+                    messages.add(text);
+                    conn.sendMessage(message);
+                }
             }
         }
     }

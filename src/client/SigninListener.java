@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class SigninListener implements ActionListener{
@@ -22,6 +23,13 @@ public class SigninListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        client.login(SigninText.getText());        
+        String text = SigninText.getText();
+        if (text.contains(" ")) {
+            JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
+            SigninText.setText(" ");
+        }
+        else {
+            client.login(text);        
+        }
     }
 }

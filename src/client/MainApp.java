@@ -44,6 +44,7 @@ public class MainApp {
     public JTable roomTable;
     public JList chatList;
     public JLabel roomLabel;
+    public JList userList;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -127,9 +128,6 @@ public class MainApp {
         tree.setShowsRootHandles(true);
         tree.setModel(new DefaultTreeModel(
             new DefaultMutableTreeNode("All Users") {
-                {
-                    add(new DefaultMutableTreeNode("All Users"));
-                }
             }
         ));
         verticalBox_1.add(tree);
@@ -137,8 +135,8 @@ public class MainApp {
         JLabel lblPeople = new JLabel("Users in this room");
         verticalBox_1.add(lblPeople);
         
-        JList list_2 = new JList();
-        verticalBox_1.add(list_2);
+        userList = new JList();
+        verticalBox_1.add(userList);
         
         JPanel chatPanel = new JPanel();
         main_panel.add(chatPanel, BorderLayout.CENTER);
@@ -164,7 +162,7 @@ public class MainApp {
         type = new JTextField();
         type.setColumns(10);
 
-        roomLabel = new JLabel("New label");
+        roomLabel = new JLabel("Room Name");
         chatPanel.add(roomLabel, BorderLayout.NORTH);
         
         /*
@@ -183,10 +181,11 @@ public class MainApp {
         
         
         DefaultTableModel roomModel = new DefaultTableModel();
-        roomModel.setDataVector(new Object[][] {}, new Object[] { "leave", "join", "name" });
+        roomModel.setDataVector(new Object[][] {}, new Object[] { "leave", "join", "name", "" });
         roomTable = new JTable(roomModel);
         roomTable.getColumnModel().getColumn(0).setPreferredWidth(27);
         roomTable.getColumnModel().getColumn(1).setPreferredWidth(27);
+        roomTable.getColumnModel().getColumn(3).setPreferredWidth(27);
 
         roomTable.getColumn("leave").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("leave").setCellEditor(

@@ -31,6 +31,12 @@ public class Client {
         signin.init();
             
     }
+    public List<String> getRooms() {
+        return currentRooms;
+    }
+    public List<String> getMessages(String room) {
+        return roomMessages.get(room);
+    }
     /**
      *  Listen for connections on the port specified in the Server constructor
      * @throws IOException 
