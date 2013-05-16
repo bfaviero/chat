@@ -38,6 +38,11 @@ public class Connection {
 		 *
 		 */
 		public class ConnectionReader implements Runnable {
+			private Connection connection;
+			
+			public ConnectionReader(Connection c){
+				this.connection = c;
+			}
 			@Override
 			public void run() {
 				ObjectInputStream ois = null;
@@ -58,8 +63,8 @@ public class Connection {
 						processUserDisconnect();
 					}
 				}
-				catch(Exception e){						
-					e.printStackTrace();
+				catch(Exception e){
+					connection.processUserDisconnect();
 				}
 			}
 			
@@ -71,6 +76,12 @@ public class Connection {
 		 *
 		 */
 		public class ConnectionWriter implements Runnable {
+			private Connection connection;
+			
+			public ConnectionWriter(Connection c){
+				this.connection = c;
+			}
+			
 			@Override
 			public void run() {
 				ObjectOutputStream oos = null;
@@ -106,8 +117,8 @@ public class Connection {
 			
 			this.messageQueue = new LinkedBlockingQueue<Packet>();
 			this.socket = sock;
-			ConnectionReader reader = new ConnectionReader();
-			ConnectionWriter writer = new ConnectionWriter();
+			ConnectionReader reader = new ConnectionReader(this);
+			ConnectionWriter writer = new ConnectionWriter(this);
 			readerThread = new Thread(reader);
 			readerThread.start();
 			writerThread = new Thread(writer);
