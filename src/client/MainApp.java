@@ -31,7 +31,7 @@ public class MainApp {
     private JTextField SigninText;
     private ClientConnection conn;
     public JTable roomTable;
-    public JList<String> chatList;
+    public JList chatList;
     public JLabel roomLabel;
     public JList userList;
     public JTree tree;
@@ -118,8 +118,8 @@ public class MainApp {
         main_panel.add(chatPanel, BorderLayout.CENTER);
         chatPanel.setLayout(new BorderLayout(0, 0));
         
-        DefaultListModel<String> chatListModel = new DefaultListModel<String>();
-        chatList = new JList<String>(chatListModel);
+        DefaultListModel chatListModel = new DefaultListModel();
+        chatList = new JList(chatListModel);
 
         JScrollPane scrollPane = new JScrollPane(chatList);
         chatPanel.add(scrollPane, BorderLayout.CENTER);

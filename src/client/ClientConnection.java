@@ -86,7 +86,7 @@ public class ClientConnection extends Connection {
         case REPLY_FAILURE:
             break;
         case REPLY_LIST_USERS:
-            DefaultListModel<String> model1 = (DefaultListModel<String>) gui.userList.getModel();
+            DefaultListModel model1 = (DefaultListModel) gui.userList.getModel();
             model1.clear();
 
             JTree tree = gui.tree;
