@@ -99,9 +99,7 @@ public class MainApp {
         tree.setAlignmentX(Component.LEFT_ALIGNMENT);
         tree.setVisibleRowCount(40);
         tree.setShowsRootHandles(true);
-        tree.setModel(new DefaultTreeModel(
-            new DefaultMutableTreeNode("All Users") {}
-        ));
+
         
         
         JScrollPane UserScrollPane = new JScrollPane(tree);
@@ -156,10 +154,10 @@ public class MainApp {
 
         roomTable.getColumn("leave").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("leave").setCellEditor(
-            new ButtonEditor(new JCheckBox(), roomLabel));
+            new ButtonEditor(new JCheckBox(), roomLabel, conn));
         roomTable.getColumn("join").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("join").setCellEditor(
-            new JoinButtonEditor(new JCheckBox(), roomLabel, conn, chatList));
+            new JoinButtonEditor(new JCheckBox(), roomLabel, conn, chatList, roomTable));
         //JScrollPane roomPane = new JScrollPane();
         roomText.addKeyListener(new RoomTextListener(roomTable, roomText, roomLabel, conn));
         verticalBox.add(roomText);

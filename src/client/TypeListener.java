@@ -55,7 +55,7 @@ public class TypeListener implements KeyListener {
                     }
                     else text = user+": "+text;
                     
-                    messages.add(text);
+                    messages.add(":"+text);
                     conn.sendMessage(message);
                 }
             }

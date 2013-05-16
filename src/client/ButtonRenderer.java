@@ -41,10 +41,12 @@ class ButtonEditor extends DefaultCellEditor {
 
   private String label;
   private JLabel roomLabel;
+  private ClientConnection conn;
   private boolean isPushed;
 
-  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel) {
+  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn) {
     super(checkBox);
+    this.conn = conn;
     this.roomLabel = roomLabel;
     button = new JButton();
     button.setOpaque(true);
@@ -64,6 +66,7 @@ class ButtonEditor extends DefaultCellEditor {
     isPushed = true;
     DefaultTableModel model = (DefaultTableModel) table.getModel();
     roomLabel.setText("");
+    conn.quit((String) model.getValueAt(row, 2));
     model.removeRow(row);
     return button;
   }
@@ -95,9 +98,11 @@ class JoinButtonEditor extends DefaultCellEditor {
     private JLabel roomLabel;
     private boolean isPushed;
     private JList chatList;
+    private JTable roomTable;
     private ClientConnection conn;
-    public JoinButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList) {
+    public JoinButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList, JTable roomTable) {
       super(checkBox);
+      this.roomTable = roomTable;
       this.conn = conn;
       this.chatList = chatList;
       this.roomLabel = roomLabel;
@@ -135,6 +140,10 @@ class JoinButtonEditor extends DefaultCellEditor {
           for (String message : messagesArr) {
               chatModel.addElement(message);
           }
+          
+          DefaultTableModel roomModel = (DefaultTableModel) roomTable.getModel(); 
+          //Clear the 'missed messages'
+          roomModel.setValueAt("", row, 3);
       }
       
       
