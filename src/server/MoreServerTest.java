@@ -122,6 +122,7 @@ public class MoreServerTest{
     public void testSendMessage() {
         try {
             server = new Server(PORT, true);
+            
             server.addDummyUsers("Guest_0");
             server.createChannel("whee", 0); 
             assertEquals(server.getChannelMessages("whee"), "");

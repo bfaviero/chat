@@ -69,5 +69,8 @@ public class Client {
         gui.init();
         
     }
- 
+    
+    public static void main(String[] args) throws UnknownHostException, IOException {
+        Client client = new Client();
+    }
 }
