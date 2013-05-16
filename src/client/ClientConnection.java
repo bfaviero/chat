@@ -146,10 +146,12 @@ public class ClientConnection extends Connection {
             JTree treeCopy = gui.tree;
             DefaultTreeModel treeModel = (DefaultTreeModel) treeCopy.getModel();
             DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
-            DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("All Users");
-            DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-            String name = message.getMessageText();
-            TreeNode fc = rootNode.getFirstChild();
+            for (int i=0;i<rootNode.getChildCount();i++) {
+                if (rootNode.getChildAt(i).equals(message.getMessageText())) {
+                    rootNode.remove(i);
+                    break;
+                }
+            }
             
             break;
         default:
