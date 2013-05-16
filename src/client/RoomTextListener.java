@@ -44,8 +44,8 @@ public class RoomTextListener implements KeyListener {
                     
                     DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
                     model.addRow(new Object[]{"x", ">", room});
-                    /*this.roomLabel.setText(room);
                     conn.join(room);
+                    /*this.roomLabel.setText(room);
                     Packet message = new Packet(Command.LIST_USERS, room, Calendar.getInstance(), "", conn.getUsername());
                     conn.sendMessage(message);*/
                     

@@ -63,7 +63,7 @@ public class Client {
         conn.setGUI(gui);
         signin.frame.setVisible(false);
         gui.init();
-        
+        conn.listUsers();
     }
     
     public static void main(String[] args) throws UnknownHostException, IOException {
