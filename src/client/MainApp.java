@@ -111,7 +111,8 @@ public class MainApp {
         JLabel lblPeople = new JLabel("Users in this room");
         verticalBox_1.add(lblPeople);
         
-        userList = new JList();
+        DefaultListModel userListModel = new DefaultListModel();
+        userList = new JList(userListModel);
         verticalBox_1.add(userList);
         
         JPanel chatPanel = new JPanel();

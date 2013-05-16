@@ -7,6 +7,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 import javax.swing.JTree;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -65,12 +66,12 @@ public class ClientConnection extends Connection {
         return client.roomMessages.get(roomName);
     }
     
-    public void processMessage(Packet message){
+    public synchronized void processMessage(Packet message){
         System.out.println("Message received and processing in progress");
         System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
         Packet response;
         switch(message.getCommand()){
-        case REPLY_LIST_CHANNELS:
+        case REPLY_LIST_CHANNEL_USERS:
             
             break;
         case REPLY_SUCCESS:
@@ -108,6 +109,26 @@ public class ClientConnection extends Connection {
                     DefaultListModel model2 = (DefaultListModel) chatList.getModel();
                     model2.addElement(mess);
                     chatList.repaint();
+                }
+            }
+            else {                
+                DefaultTableModel roomModel = (DefaultTableModel) gui.roomTable.getModel(); 
+                synchronized(roomModel){
+                    for (int i=0;i<roomModel.getRowCount();i++) {
+                        if (roomModel.getValueAt(i, 2)==gui.roomLabel.getText()) {
+                            String missed = (String) roomModel.getValueAt(i, 3);
+                            try {
+                                Integer numMissed = Integer.parseInt(missed);
+                                numMissed +=1;
+                                roomModel.setValueAt(numMissed.toString(), i, 3);
+                            }
+                            catch(Exception e) {
+                                roomModel.setValueAt("1", i, 3);
+                            }
+                            
+                            break;
+                        }
+                    }
                 }
             }
             client.getMessages(message.getChannelName()).add(mess);
