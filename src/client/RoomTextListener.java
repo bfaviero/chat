@@ -43,6 +43,7 @@ public class RoomTextListener implements KeyListener {
                     conn.client.roomMessages.put(roomText.getText(), messages);
                     
                     DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+                    int index = model.getRowCount();
                     model.addRow(new Object[]{"x", ">", room, ""});
                     conn.join(room);
                     /*this.roomLabel.setText(room);

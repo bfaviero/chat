@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 /**
- * @version 1.0 11/09/98
+ *Button Renderer represents the class of the table of room names
  */
 class ButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -35,9 +35,6 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
   }
 }
 
-/**
- * @version 1.0 11/09/98
- */
 
 class ButtonEditor extends DefaultCellEditor {
   protected JButton button;
@@ -145,12 +142,6 @@ class JoinButtonEditor extends DefaultCellEditor {
     }
 
     public Object getCellEditorValue() {
-      if (isPushed) {
-        // 
-        // 
-        
-        // System.out.println(label + ": Ouch!");
-      }
       isPushed = false;
       return new String(label);
     }
