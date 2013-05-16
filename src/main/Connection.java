@@ -63,8 +63,11 @@ public class Connection {
 						processUserDisconnect();
 					}
 				}
-				catch(Exception e){
+				catch(IOException e){
 					connection.processUserDisconnect();
+				}
+				catch(Exception e){
+					e.printStackTrace();
 				}
 			}
 			
