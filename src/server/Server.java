@@ -101,7 +101,8 @@ public class Server{
      * Create a Channel as per request from a User, with a given channel Name.  
      * TODO: Handle behavior when channel Name is already taken.  
      * @param channelName - the name the User wants to call this new Channel.
-     * @param firstUserId - the User requesting to creating this channel.
+     * @param firstUserId - the User requesting to creating this channel.  
+     * Must be a key in this.userMap.
      * @return the newly created Channel.  
      */
     public Channel createChannel(String channelName, int firstUserId){
@@ -115,7 +116,8 @@ public class Server{
     
     /**
      * Have a User join a Channel with a specified name, if such a Channel exists.  
-     * @param userId - the userID of the User making the join request.
+     * @param userId - the userID of the User making the join request.  
+     * Must be a key in this.userMap.
      * @param channelName - the name of the Channel the User wants to join.
      */
     public void addUserToChannel(int userId, String channelName){
