@@ -42,9 +42,9 @@ public class RoomTextListener implements KeyListener {
                     List<String> messages = new ArrayList<String>();
                     conn.client.roomMessages.put(roomText.getText(), messages);
                     
-                    /*DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+                    DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
                     model.addRow(new Object[]{"x", ">", room});
-                    this.roomLabel.setText(room);
+                    /*this.roomLabel.setText(room);
                     conn.join(room);
                     Packet message = new Packet(Command.LIST_USERS, room, Calendar.getInstance(), "", conn.getUsername());
                     conn.sendMessage(message);*/
