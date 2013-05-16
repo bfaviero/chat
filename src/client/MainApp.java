@@ -130,6 +130,8 @@ public class MainApp {
             new DefaultMutableTreeNode("All Users") {
             }
         ));
+        
+        
         verticalBox_1.add(tree);
         
         JLabel lblPeople = new JLabel("Users in this room");
@@ -182,7 +184,13 @@ public class MainApp {
         
         DefaultTableModel roomModel = new DefaultTableModel();
         roomModel.setDataVector(new Object[][] {}, new Object[] { "leave", "join", "name", "" });
-        roomTable = new JTable(roomModel);
+        roomTable = new JTable(roomModel) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
         roomTable.getColumnModel().getColumn(0).setPreferredWidth(27);
         roomTable.getColumnModel().getColumn(1).setPreferredWidth(27);
         roomTable.getColumnModel().getColumn(3).setPreferredWidth(27);
