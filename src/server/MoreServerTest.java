@@ -1,57 +1,42 @@
 package server;
 
-import client.*;
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
-import java.net.Socket;
-
-import junit.framework.TestCase;
-
 import main.Packet;
-import main.User;
-
 import org.junit.*;
 import static org.junit.Assert.*;
-import java.util.*;
 
 public class MoreServerTest{
     
     private final int PORT = 1234;
     private Server server;
-    //private Server server = new Server(PORT, true);
-    private Thread t;
-    
     
     /**
      * Check that upon initialization a new server has no users nor channels
-    
+     */
     @Test
     public void checkStart ()
     {
         try {
-        server = new Server(PORT, true);
+        server = new Server(PORT);
         assertEquals(server.getUserList(), "");
         assertEquals(server.getChannelList(), "");
         server.terminate();
         } catch (IOException e) {
             System.out.println(e.getStackTrace());
-            //assertEquals(0, 1);
         }
         
     }
-    */
+ 
     
     /**
      * Login with two clients to start, create two channels.
      * Double-check that these are the only objects in the server HashMaps.  
-     
+     */
     @Test
     public void logIn()
     {
         try {
-            server = new Server(PORT, true);
+            server = new Server(PORT);
             server.addDummyUsers("Guest_0");
             server.addDummyUsers("Guest_1");
             server.createChannel("chess", 0);
@@ -65,16 +50,16 @@ public class MoreServerTest{
                 //assertEquals(0, 1);
             }        
     }
-    */
+
     /**
      * Basic test of creating, joining and leaving Channels.
      * Individual tests are described below.
-     
+     */
     @Test
     public void joiningChannel()
     {
         try {
-            server = new Server(PORT, true);
+            server = new Server(PORT);
             server.addDummyUsers("Guest_0");
             server.addDummyUsers("Guest_1");
             
@@ -117,11 +102,11 @@ public class MoreServerTest{
                 //assertEquals(0, 1);
             }        
     }
-    */
+  
     @Test
     public void testSendMessage() {
         try {
-            server = new Server(PORT, true);
+            server = new Server(PORT);
             
             server.addDummyUsers("Guest_0");
             server.createChannel("whee", 0); 
