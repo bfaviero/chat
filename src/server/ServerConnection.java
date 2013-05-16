@@ -39,8 +39,15 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LIST_USERS:
-			String userList = this.server.getUserList();
-			response = new Packet(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList, "");			
+		    String room = message.getChannelName();
+		    if (room.length()>0) {
+		        String userList = this.server.getChannelUsers(room);
+		        response = new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", Calendar.getInstance(), userList, "");
+		    }
+		    else {
+		        String userList = this.server.getUserList();
+		        response = new Packet(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList, "");
+		    }				
 			sendMessage(response);
 			break;
 		case LOGIN:
@@ -56,10 +63,10 @@ public class ServerConnection extends Connection {
 		case MESSAGE:
 		    System.out.println("Received message");
 		    System.out.println(message.getChannelName() + " " + message.getMessageText());
-			this.server.sendMessageToChannel(this.user, message);
+			this.server.sendMessageToChannel(this.userId, message);
 			break;
 		case QUIT:
-			this.server.removeUserFromChannel(this.user, message.getChannelName());
+			this.server.removeUserFromChannel(this.userId, message.getChannelName());
 			break;
 		default:
 			System.out.println("Fell through");

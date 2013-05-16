@@ -50,8 +50,8 @@ public class Server{
     		userMap = new HashMap<Integer, User>();
     		channelMap = new HashMap<String, Channel>();
     		nextId = 0;
-    		channelMonitor = new Thread(new ChannelMonitor());
-    		channelMonitor.start();
+    		//channelMonitor = new Thread(new ChannelMonitor());
+    		//channelMonitor.start();
     	}
     	catch(Exception e){
     		e.printStackTrace();   		
@@ -99,9 +99,11 @@ public class Server{
     
     /**
      * Create a Channel as per request from a User, with a given channel Name.  
-     * TODO: Handle behavior when channel Name is already taken.  
      * @param channelName - the name the User wants to call this new Channel.
-     * @param firstUserId - the User requesting to creating this channel.
+     * channelName cannot be identical to the name of a Channel already on the server.
+     * This is maintained by the GUI/Client side.  
+     * @param firstUserId - the User requesting to creating this channel.  
+     * Must be a key in this.userMap.
      * @return the newly created Channel.  
      */
     public Channel createChannel(String channelName, int firstUserId){
@@ -115,7 +117,8 @@ public class Server{
     
     /**
      * Have a User join a Channel with a specified name, if such a Channel exists.  
-     * @param userId - the userID of the User making the join request.
+     * @param userId - the userID of the User making the join request.  
+     * Must be a key in this.userMap.
      * @param channelName - the name of the Channel the User wants to join.
      */
     public void addUserToChannel(int userId, String channelName){
@@ -126,17 +129,23 @@ public class Server{
     		
     }
     
-    //TODO: Synchronize this with addUserFromChannel - user vs. userID.  
     /**
      * Removes a User from a Channel with a specified name, if such a Channel exists.  
-     * @param user - the User that will be removed.
+     * @param int userID - the ID of the User that will be removed.
+     * Must be a key in this.userMap.  
      * @param channelName - the name of the Channel the User will be removed from.
      */
-    public void removeUserFromChannel(User user, String channelName){
-    	if(channelMap.containsKey(channelName)){
-    		Channel channel = channelMap.get(channelName);
-    		channel.removeUser(user);
-    	}
+    public void removeUserFromChannel(int userID, String channelName){
+        synchronized(channelMap) {
+            if(channelMap.containsKey(channelName)){
+                Channel channel = channelMap.get(channelName);
+                channel.removeUser(userMap.get(userID));
+                if (!channel.getRepInvariant())
+                {
+                    channelMap.remove(channelName);
+                }
+            }
+        }
     }
     
     /**
@@ -165,22 +174,54 @@ public class Server{
     	return channelList.toString().trim();
     }
     
-    //TODO: Make sure User parameter matches (user vs. int userID)
+    /**
+     * Returns a string representation of all Users that are members of a Channel.
+     * @return a string of User nicknames separated by " ".  
+     */
+    public String getChannelUsers(String channelName){
+        //Because of .trim() at end of channel.getMessages(), should be impossible
+        //for an existing channel to return "\n" as their String of messages
+        //so can use this to determine if the specified channelName exists on the server.
+        String messages = " ";
+        if(channelMap.containsKey(channelName)){
+            messages = channelMap.get(channelName).getUserNames();
+        }
+        
+        return messages;
+    }
+    /**
+     * Supporting method; may not be used.  
+     * Returns a string representation of all messages on a Channel.
+     * @return a string of Channel messages separated by "\n".  
+     */
+    public String getChannelMessages(String channelName){
+        //Because of .trim() at end of channel.getMessages(), should be impossible
+        //for an existing channel to return "\n" as their String of messages
+        //so can use this to determine if the specified channelName exists on the server.
+        String messages = "\n";
+        if(channelMap.containsKey(channelName)){
+            messages = channelMap.get(channelName).getMessages();
+        }
+        
+        return messages;
+    }
+    
     /**
      * Sends a Message to a requested Channel from a User, if the Channel exists.  
-     * @param u - the User sending the message.
+     * @param userID - the int ID of the User sending the message.
+     * Must be a key in this.userMap.  
      * @param message - a Packet containing info as to which Channel the 
      * message is being sent to and the contents of the message.
      */
-    public void sendMessageToChannel(User u, Packet message){
-    	System.out.println(u.nickname);
+    public void sendMessageToChannel(int userID, Packet message){
+    	System.out.println(userMap.get(userID).nickname);
     	System.out.println(this.channelMap.keySet().size());
     	System.out.println(message.getChannelName() + " " + message.getMessageText());
         System.out.println("Send message to channel");
     	if(channelMap.containsKey(message.getChannelName())){
     	    System.out.println("channelMap contains channelName "+message.getChannelName());
     		Channel channel = channelMap.get(message.getChannelName());
-    		channel.addMessage(message, u);
+    		channel.addMessage(message, userMap.get(userID));
     	}
     }
     
@@ -210,12 +251,53 @@ public class Server{
     }
     
     /**
+     * Used in Server testing.  Gets an instance of User.
+     * @param id - the int id of the User on the userMap.  
+     * @return the User instance with the given id
+     * 
+     */
+    public User getUser(int userID){
+        return userMap.get(userID);
+    }
+    
+    /**
+     * Used in Server testing.  Create an instance of User with nickname s.
+     * @param s, the nickname of User.  
+     */
+    public void addDummyUsers(String s){
+        synchronized(userMap) {
+            userMap.put(this.nextId, new User(s));
+            this.nextId++;
+        }
+    }
+    
+    /**
+     * Used in Server testing.  Checks if there is a Channel with the given name
+     * on the server.
+     * @param name, the name of the Channel queried about.
+     * @return true of such a named Channel exists on the server, false otherwise.  
+     */
+    public boolean hasChannel(String name){
+        return this.channelMap.containsKey(name);
+    }
+    
+    /**
+     * Used in Server testing.  Checks if there is a User with the given name
+     * on the server.
+     * @param name, the name of the User queried about.
+     * @return true of such a named User exists on the server, false otherwise.  
+     */
+    public boolean hasUser(String name){
+        return this.userMap.containsKey(name);
+    }
+    
+    /**
      * Closes the server.
      * @throws IOException
      */
     public void terminate() throws IOException{
     	this.server.close();
-    	this.channelMonitor.interrupt();
+    	//this.channelMonitor.interrupt();
     }
     
     /**

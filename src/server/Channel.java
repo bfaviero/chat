@@ -17,7 +17,8 @@ public class Channel{
 
     /**
      * Create a new instance of Channel.
-     * @param title - the name of the Channel.
+     * @param title - the name of the Channel. Cannot contain whitespace.
+     * This is enforced by the GUI/Client.  
      * @param owner - the User who created this Channel. 
      */
     public Channel(String title, User owner)
@@ -62,7 +63,7 @@ public class Channel{
      */
     public void removeUser(User user)
     {
-        if(this.hasUser(user))
+        if(this.hasUser(user))      
         	this.users.remove(user);
     }
 
@@ -86,5 +87,31 @@ public class Channel{
      */
     public int getUserCount(){
     	return this.users.size();
+    }
+    
+    /**
+     * Get a String representation of all the messages in this Channel,
+     * each message has form "AUTHOR:MESSAGETEXT", and are delineated by "\n" character.  
+     * @return String containing all messages of this Channel
+     */
+    public String getMessages() {
+        //TODO: Implement Date/User filter?
+        StringBuilder channelMessages = new StringBuilder("");
+        for(Packet m : this.messages){
+            channelMessages.append(m.getAuthor() + m.getMessageText() + "\n");
+        }
+        return channelMessages.toString().trim();
+    }
+    
+    /**
+     * Get a String representation of all Users that are members of this Channel. 
+     * @return String of the nicknames of the Users of this Channel, separated by a space.
+     */
+    public String getUserNames(){
+        StringBuilder channelUsers = new StringBuilder("");
+        for(User u : this.users){
+            channelUsers.append(u.nickname + " ");
+        }
+        return channelUsers.toString().trim();
     }
 }
