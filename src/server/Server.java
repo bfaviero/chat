@@ -159,7 +159,7 @@ public class Server{
     	for(User u : userMap.values()){
     		userList.append(u.nickname+" ");
     	}
-    	return userList.toString();
+    	return userList.toString().trim();
     }
     
     /**

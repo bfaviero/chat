@@ -11,6 +11,13 @@ public class Packet implements java.io.Serializable{
 	private Calendar calendar;
 	private String messageText;
 	private String author;
+	
+	//Dummy constructor used in Server Testing.  
+	public Packet()
+	{
+	    
+	}
+	
 	public Packet(Command command, String channelName, Calendar date, String messageText, String author){
 		this.channelName = channelName;
 		this.command = command;

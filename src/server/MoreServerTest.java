@@ -26,7 +26,7 @@ public class MoreServerTest{
     
     /**
      * Check that upon initialization a new server has no users nor channels
-    */ 
+    
     @Test
     public void checkStart ()
     {
@@ -41,12 +41,12 @@ public class MoreServerTest{
         }
         
     }
-    
+    */
     
     /**
      * Login with two clients to start, create two channels.
      * Double-check that these are the only objects in the server HashMaps.  
-    */ 
+     
     @Test
     public void logIn()
     {
@@ -65,11 +65,11 @@ public class MoreServerTest{
                 //assertEquals(0, 1);
             }        
     }
-    
+    */
     /**
      * Basic test of creating, joining and leaving Channels.
      * Individual tests are described below.
-     */
+     
     @Test
     public void joiningChannel()
     {
@@ -117,14 +117,27 @@ public class MoreServerTest{
                 //assertEquals(0, 1);
             }        
     }
-    /**
+    */
     @Test
     public void testSendMessage() {
         try {
             server = new Server(PORT, true);
             server.addDummyUsers("Guest_0");
             server.createChannel("whee", 0); 
-            
+            assertEquals(server.getChannelMessages("whee"), "");
+            Packet m1 = new Packet();
+            m1.setMessageText("hi world");
+            m1.setChannelName("whee");
+            m1.setAuthor("Guest_0");
+            server.sendMessageToChannel(0, m1);
+            Packet m2 = new Packet();
+            m2.setMessageText("bye world");
+            m2.setChannelName("whee");
+            m2.setAuthor("Guest_0");
+            server.sendMessageToChannel(0, m2);
+            assertEquals(server.getChannelMessages("whee"), 
+                    m1.getAuthor() + m1.getMessageText() + "\n" + 
+            m2.getAuthor() + m2.getMessageText());
             server.terminate();
             
         } catch (IOException e) {
@@ -132,7 +145,7 @@ public class MoreServerTest{
         }
     }
     
-   */ 
+   
 
 
 }
