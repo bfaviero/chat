@@ -95,6 +95,17 @@ public class ServerTest{
             server.removeUserFromChannel(0, "chess");            
             assertTrue(!server.hasChannel("chess"));
             
+            server.addUserToChannel(0, "chess");
+            server.addUserToChannel(1, "chess");
+            
+            //Tests a User leaving the server; checks that the User
+            //leaves all Channels it was in and if a Channel's member count drops to 0,
+            //it is deleted.  
+            server.notifyServerOfUserDisconnect(1);
+            assertEquals(server.getChannelList(), "chess");
+            assertEquals(server.getUserList(), "Guest_0");
+            assertEquals(server.getChannel("chess").getUserNames(), "Guest_0");
+            assertEquals(server.getChannel("chess").getUserCount(), 1);
             
             server.terminate();
             
@@ -126,6 +137,7 @@ public class ServerTest{
                     m1.getAuthor() + m1.getMessageText() + "\n" + 
             m2.getAuthor() + m2.getMessageText());
             assertEquals(server.getChannelUsers("whee"), "Guest_0");
+            
             server.terminate();
             
         } catch (IOException e) {
