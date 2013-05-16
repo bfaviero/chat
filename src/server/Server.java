@@ -18,7 +18,7 @@ import main.User;
  */
 
 public class Server{
-	private int nextId;
+	private Integer nextId;
 	private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
     private HashMap<String, Channel> channelMap; // Maps room names to channels
@@ -80,6 +80,8 @@ public class Server{
      * @param socket, the Socket the user is communicating from
      */
     public void makeUserFromSocket(Socket socket){
+    	// make sure that we don't assign same ID to two users by mistake
+    	synchronized(nextId){
     	String nickname = new String("Guest_" + String.valueOf(nextId));
 		
 		// Create a server connection and connect it to the appropriate user.
@@ -87,13 +89,21 @@ public class Server{
 		User user = new User(nextId, nickname, userConnection);
 		userConnection.setUser(user);
 		
-		synchronized(userMap){
-			userMap.put(nextId, user);
-		}
 		// Send a response that connection was successful;
 		
 		//I'd argue to put nextID++ in the synchronized block.  
 		nextId++;
+		
+    	synchronized(userMap){
+	    	for(User u : userMap.values()){
+	    		if(u != user){
+	    			System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
+	    			u.connection.sendMessage(new Packet(Command.LOGIN, "", Calendar.getInstance(), "", user.nickname));
+	    		}
+	    	}
+			userMap.put(nextId, user);
+    	}
+	}
     }
     
     /**
@@ -124,8 +134,10 @@ public class Server{
     	// Need to create a new channel if this one doesn't exist already
     	if(!channelMap.containsKey(channelName))
     		createChannel(channelName, userId);
-    	channelMap.get(channelName).addUser(userMap.get(userId));
-    		
+    	Channel c = channelMap.get(channelName);
+    	User u = userMap.get(userId);
+    	c.addMessage(new Packet(Command.JOIN, channelName, Calendar.getInstance(), "", u.nickname), u);
+    	c.addUser(userMap.get(userId));
     }
     
     /**
@@ -135,7 +147,6 @@ public class Server{
      * @param channelName - the name of the Channel the User will be removed from.
      */
     public void removeUserFromChannel(int userID, String channelName){
-    	System.out.println("Removing user: "+userMap.get(userID).nickname+" from channel "+channelName);
         synchronized(channelMap) {
             if(channelMap.containsKey(channelName)){
                 Channel channel = channelMap.get(channelName);
