@@ -76,7 +76,9 @@ public class ServerConnection extends Connection {
 	}
 	
 	public void processUserDisconnect(){
+		System.out.println("User disconnected");
 		this.server.notifyServerOfUserDisconnect(this.userId);
+		closeSockets();
 	}
 	
 	public void closeSockets(){

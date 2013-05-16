@@ -120,6 +120,11 @@ public class ClientConnection extends Connection {
         }
     }
 
+	public void processUserDisconnect(){
+		// Do nothing
+	}
+    
+    
 
 
 }
