@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
@@ -102,6 +103,7 @@ public class ClientConnection extends Connection {
             break;
         case MESSAGE:
             String mess = message.getAuthor()+": "+ message.getMessageText();
+            JOptionPane.showMessageDialog(null, "receive");
             if (gui.roomLabel.getText().equals(message.getChannelName())) {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
@@ -118,11 +120,13 @@ public class ClientConnection extends Connection {
                         if (roomModel.getValueAt(i, 2)==gui.roomLabel.getText()) {
                             String missed = (String) roomModel.getValueAt(i, 3);
                             try {
+                                JOptionPane.showMessageDialog(null, "adding");
                                 Integer numMissed = Integer.parseInt(missed);
                                 numMissed +=1;
                                 roomModel.setValueAt(numMissed.toString(), i, 3);
                             }
                             catch(Exception e) {
+                                JOptionPane.showMessageDialog(null, "1");
                                 roomModel.setValueAt("1", i, 3);
                             }
                             
