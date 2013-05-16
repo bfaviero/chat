@@ -20,8 +20,8 @@ public class Signin {
     protected JFrame frame;
     private JTextField SigninText;
     private Client client;
-    JList chatList;
-    JLabel roomLabel;
+    public JList chatList;
+    public JLabel roomLabel;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -50,24 +50,11 @@ public class Signin {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        /*
-         * 
-         * 
-         * Frame
-         * 
-         * 
-         */
         frame = new JFrame();
         frame.setBounds(100, 100, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new CardLayout(0, 0));
-        /*
-         * 
-         * 
-         * signin screen
-         * 
-         * 
-         */
+
         JPanel signin_panel = new JPanel();
         frame.getContentPane().add(signin_panel, "name_1367989163741677000");
         signin_panel.setLayout(new BoxLayout(signin_panel, BoxLayout.Y_AXIS));
@@ -94,14 +81,15 @@ public class Signin {
         join_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         SigninListener signinListener = new SigninListener(SigninText, client);
         join_button.addActionListener(signinListener);
+
+        // Make enter key work the same as pressing the Join Server button
+        frame.getRootPane().setDefaultButton(join_button);
+
         signin_box.add(SigninText);
         SigninText.setColumns(10);
         SigninText.setMaximumSize(SigninText.getPreferredSize() );
         signin_panel.add(join_button);
-       
-
-
-        
+   
     }
 
 }
