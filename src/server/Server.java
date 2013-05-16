@@ -3,10 +3,13 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import main.Connection;
+import main.Connection.Command;
 import main.Packet;
 import main.User;
 
@@ -132,14 +135,13 @@ public class Server{
      * @param channelName - the name of the Channel the User will be removed from.
      */
     public void removeUserFromChannel(int userID, String channelName){
+    	System.out.println("Removing user: "+userMap.get(userID).nickname+" from channel "+channelName);
         synchronized(channelMap) {
             if(channelMap.containsKey(channelName)){
                 Channel channel = channelMap.get(channelName);
+                User u = userMap.get(userID);
+                channel.addMessage(new Packet(Command.QUIT, channelName, Calendar.getInstance(), "", u.nickname), u);
                 channel.removeUser(userMap.get(userID));
-                if (!channel.getRepInvariant())
-                {
-                    channelMap.remove(channelName);
-                }
             }
         }
     }
@@ -202,6 +204,7 @@ public class Server{
         return messages;
     }
     
+    
     /**
      * Sends a Message to a requested Channel from a User, if the Channel exists.  
      * @param userID - the int ID of the User sending the message.
@@ -221,6 +224,8 @@ public class Server{
     	}
     }
     
+    
+    
     /**
      * Removes a User from the Server upon its client disconnecting 
      * and erases its presence from the Server's Channels.
@@ -228,11 +233,15 @@ public class Server{
      */
     public void notifyServerOfUserDisconnect(int userId){
     	User u = userMap.get(userId);
-    	for(String channel : channelMap.keySet()){
-    		Channel c = channelMap.get(channel);
-    		if(c.hasUser(u)){
-    		    removeUserFromChannel(userId, channel);
-    		}
+    	synchronized(channelMap){
+	    	Iterator it = channelMap.entrySet().iterator();
+	        while (it.hasNext()) {
+	        	Map.Entry<String, Channel> nextChannel = (Map.Entry<String, Channel>) it.next();
+	            Channel channel = (Channel)nextChannel.getValue();
+	            if(channel.hasUser(u)){
+	            	removeUserFromChannel(userId, (String)nextChannel.getKey());
+	            }
+	        }
     	}
     	userMap.remove(userId);
     }
