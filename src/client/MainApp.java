@@ -111,7 +111,7 @@ public class MainApp {
         JLabel lblPeople = new JLabel("Users in this room");
         verticalBox_1.add(lblPeople);
         
-        userList = new JList<Object>();
+        userList = new JList();
         verticalBox_1.add(userList);
         
         JPanel chatPanel = new JPanel();
@@ -127,7 +127,7 @@ public class MainApp {
         Box horizontalBox = Box.createHorizontalBox();
         chatPanel.add(horizontalBox, BorderLayout.SOUTH);
         
-        JList<String> list_3 = new JList<String>();
+        JList list_3 = new JList();
         horizontalBox.add(list_3);
         
         JLabel lblNewLabel_1 = new JLabel("Type:");
