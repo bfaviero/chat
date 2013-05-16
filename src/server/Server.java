@@ -128,16 +128,16 @@ public class Server{
     		
     }
     
-    //TODO: Synchronize this with addUserFromChannel - user vs. userID.  
     /**
      * Removes a User from a Channel with a specified name, if such a Channel exists.  
-     * @param user - the User that will be removed.
+     * @param int userID - the ID of the User that will be removed.
+     * Must be a key in this.userMap.  
      * @param channelName - the name of the Channel the User will be removed from.
      */
-    public void removeUserFromChannel(User user, String channelName){
+    public void removeUserFromChannel(int userID, String channelName){
     	if(channelMap.containsKey(channelName)){
     		Channel channel = channelMap.get(channelName);
-    		channel.removeUser(user);
+    		channel.removeUser(userMap.get(userID));
     	}
     }
     
@@ -183,22 +183,22 @@ public class Server{
         return messages;
     }
     
-    //TODO: Make sure User parameter matches (user vs. int userID)
     /**
      * Sends a Message to a requested Channel from a User, if the Channel exists.  
-     * @param u - the User sending the message.
+     * @param userID - the int ID of the User sending the message.
+     * Must be a key in this.userMap.  
      * @param message - a Packet containing info as to which Channel the 
      * message is being sent to and the contents of the message.
      */
-    public void sendMessageToChannel(User u, Packet message){
-    	System.out.println(u.nickname);
+    public void sendMessageToChannel(int userID, Packet message){
+    	System.out.println(userMap.get(userID).nickname);
     	System.out.println(this.channelMap.keySet().size());
     	System.out.println(message.getChannelName() + " " + message.getMessageText());
         System.out.println("Send message to channel");
     	if(channelMap.containsKey(message.getChannelName())){
     	    System.out.println("channelMap contains channelName "+message.getChannelName());
     		Channel channel = channelMap.get(message.getChannelName());
-    		channel.addMessage(message, u);
+    		channel.addMessage(message, userMap.get(userID));
     	}
     }
     
