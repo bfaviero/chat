@@ -26,8 +26,11 @@ import javax.swing.table.DefaultTableModel;
 public class MainApp {
 
     private JFrame frame;
+    //Where users type in the room they want to join
     private JTextField roomText;
+    //Where users type in messages
     private JTextField type;
+    //Where users type in their username
     private JTextField SigninText;
     private ClientConnection conn;
     public JTable roomTable;

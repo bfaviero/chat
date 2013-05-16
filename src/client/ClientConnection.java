@@ -84,7 +84,10 @@ public class ClientConnection extends Connection {
             System.out.print("Reply success");
             break;
         case LOGIN:
-            System.out.print("Logged in?");
+            JTree treeCopy1 = gui.tree;
+            DefaultTreeModel treeModel1 = (DefaultTreeModel) treeCopy1.getModel();
+            DefaultMutableTreeNode rootNode1 = (DefaultMutableTreeNode) treeModel1.getRoot();
+            rootNode1.add(new DefaultMutableTreeNode(message.getAuthor()));
             break;
         case JOIN:
             response = new Packet(Command.LOGIN, "", Calendar.getInstance(), client.getUser(), "");
@@ -147,7 +150,7 @@ public class ClientConnection extends Connection {
             DefaultTreeModel treeModel = (DefaultTreeModel) treeCopy.getModel();
             DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
             for (int i=0;i<rootNode.getChildCount();i++) {
-                if (rootNode.getChildAt(i).equals(message.getMessageText())) {
+                if (rootNode.getChildAt(i).equals(message.getAuthor())) {
                     rootNode.remove(i);
                     break;
                 }
