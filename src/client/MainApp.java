@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
+
 import java.awt.Component;
 import java.awt.CardLayout;
 import java.util.List;
@@ -45,6 +47,7 @@ public class MainApp {
     public JList chatList;
     public JLabel roomLabel;
     public JList userList;
+    public JTree tree;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -122,17 +125,21 @@ public class MainApp {
         Box verticalBox_1 = Box.createVerticalBox();
         main_panel.add(verticalBox_1, BorderLayout.EAST);
         
-        JTree tree = new JTree();
+        
+        
+        tree = new JTree();
+        tree.setModel(new DefaultTreeModel(
+                new DefaultMutableTreeNode("All Users") {
+                }
+            ));
+        tree.getSelectionModel().setSelectionMode
+            (TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setAlignmentX(Component.LEFT_ALIGNMENT);
         tree.setVisibleRowCount(40);
         tree.setShowsRootHandles(true);
-        tree.setModel(new DefaultTreeModel(
-            new DefaultMutableTreeNode("All Users") {
-            }
-        ));
-        
-        
+        JScrollPane UserScrollPane = new JScrollPane(tree);
         verticalBox_1.add(tree);
+        
         
         JLabel lblPeople = new JLabel("Users in this room");
         verticalBox_1.add(lblPeople);

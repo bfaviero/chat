@@ -67,7 +67,7 @@ public class Client {
         conn.setGUI(gui);
         signin.frame.setVisible(false);
         gui.init();
-        
+        conn.listUsers();
     }
  
 }

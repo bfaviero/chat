@@ -8,7 +8,10 @@ import java.util.concurrent.BlockingQueue;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import server.Server;
 import main.User;
@@ -50,6 +53,10 @@ public class ClientConnection extends Connection {
         Packet m = new Packet(Command.MESSAGE, room, Calendar.getInstance(), message,  "");
         sendMessage(m);
     }
+    public void listUsers() {
+        Packet m = new Packet(Command.LIST_USERS, "", Calendar.getInstance(), "",  "");
+        sendMessage(m);
+    }
     public String getUsername() {
         return client.getUser();
     }
@@ -77,12 +84,14 @@ public class ClientConnection extends Connection {
         case REPLY_FAILURE:
             break;
         case REPLY_LIST_USERS:
-            DefaultListModel model1 =(DefaultListModel) gui.userList.getModel();
-            model1.clear();
+            JTree tree = gui.tree;
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode("All Users");
+            DefaultTreeModel model = new DefaultTreeModel(root);
             String[] text = message.getMessageText().split(" ");
             for (String name : text) {
-                model1.addElement(name);
+                root.add(new DefaultMutableTreeNode(name));
             }
+            tree.setModel(model);
             break;
         case MESSAGE:
             System.out.println("receiving message");
@@ -90,8 +99,8 @@ public class ClientConnection extends Connection {
             if (gui.roomLabel.getText().equals(message.getChannelName())) {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
-                    DefaultListModel model = (DefaultListModel) chatList.getModel();
-                    model.addElement(mess);
+                    DefaultListModel model2 = (DefaultListModel) chatList.getModel();
+                    model2.addElement(mess);
                     chatList.repaint();
                 }
             }
@@ -108,7 +117,7 @@ public class ClientConnection extends Connection {
             
         }
     }
-    
+
 
 
 }
