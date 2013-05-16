@@ -4,12 +4,23 @@ import java.util.Calendar;
 
 import main.Connection.Command;
 
+/**
+ * Represents a general instance of a message object, sent between ServerConnection 
+ * and ClientConnection.  
+ *
+ */
 public class Packet implements java.io.Serializable{
 	private static final long serialVersionUID = -5296132268968878736L;
-	private Command command;	
+	//Tells what type of processing action the Connection must do.  
+	//In addition, Packets with Command MESSAGE are stored in Channels.  
+	private Command command;
+	//The name of the Channel the Packet may be stored in, if one exists (else is "").  
 	private String channelName;
+	//The date this Packet was sent.
 	private Calendar calendar;
+	//The body text of this Packet.  
 	private String messageText;
+	//The sender of this Packet.  If sent by the server-side, this field is "".  
 	private String author;
 	
 	//Dummy constructor used in Server Testing.  

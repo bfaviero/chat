@@ -9,6 +9,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import main.User;
 
 
+/**
+ * A custom class to handle the incoming and outgoing Packets in a Socket.  
+ * There are two subclasses, ServerConnection and ClientConnection
+ * which handle the Sockets on the Server and Client side respectively.  
+ *
+ */
+
 public class Connection {
 		protected Socket socket;
 		protected User user;
@@ -25,6 +32,11 @@ public class Connection {
 			REPLY_LIST_CHANNEL_USERS, REPLY_LIST_USERS 
 		};
 		
+		/**
+		 * ConnectionReader continuously reads in the next Packet from 
+		 * the incoming stream and processes it.  
+		 *
+		 */
 		public class ConnectionReader implements Runnable {
 			@Override
 			public void run() {
@@ -53,6 +65,11 @@ public class Connection {
 			
 		}
 		
+		/**
+		 * ConnectionWriter continuously takes Packets from the messageQueue to 
+		 * write to the outgoing stream.  
+		 *
+		 */
 		public class ConnectionWriter implements Runnable {
 			@Override
 			public void run() {
@@ -97,10 +114,13 @@ public class Connection {
 			writerThread.start();
 		}
 		
+		//Process a Packet; overriden by subclasses.  
+		//Usually calls sendMessage() method at the end to place a reply Packet on the queue.  
 		public void processMessage(Packet message){
 			System.out.println("Dummy processMessage message in Connection");
 		}
 		
+		//Place a Packet onto the Connection's messageQueue to eventually write out.
 		public void sendMessage(Packet output){
 			messageQueue.offer(output);
 		}

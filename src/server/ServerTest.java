@@ -1,112 +1,151 @@
-//package server;
-//
-//
-//import java.io.ObjectInputStream;
-//import java.io.ObjectOutputStream;
-//import java.net.Socket;
-//
-//import junit.framework.TestCase;
-//
-//import main.Packet;
-//import main.User;
-//
-//import org.junit.Test;
-//
-//public class ServerTest extends TestCase{
-//	
-//	private final int PORT = 1234;
-//	private Server server;
-//	private Socket user0;
-//	private Socket user1;
-//	private Thread t;
-//	
-//	/**
-//	 * Set up a server with two clients connected to it,
-//	 * Guest_1 and Guest_2
-//	 */
-//	@Override
-//    protected void setUp() throws Exception
-//    {
-//     	server = new Server(PORT, true);
-//     	
-//        user0 = new Socket();
-//        user1 = new Socket();
-//        
-//        server.makeUserFromSocket(user0);
-//        server.makeUserFromSocket(user1);
-//    }
-//	
-//	@Override
-//    protected void tearDown() throws Exception
-//    {
-//        server.terminate();
-//        user0.close();
-//        user1.close();
-//    }
-//	
-//	/********************************************************
-//	 * 						Unit Tests						*
-//	 *********************************************************/
-//	
-//	// Verify that both guests are shown in the user list
-//	@Test
-//	public void testGetAllUsers(){
-//		System.out.println(server.getUserList());
-//		assertTrue(server.getUserList().contains("Guest_0"));
-//		assertTrue(server.getUserList().contains("Guest_1"));
-//	}
-//	
-//	@Test
-//	public void testChannelCreateAndList(){
-//		server.createChannel("chess", 0);
-//		assertEquals("chess", server.getChannelList());
-//		server.createChannel("rabbits", 0);
-//		assertTrue(server.getChannelList().contains("rabbits"));
-//	}
-//	
-//
-//	// Test that adding two users to a channel results in two users being
-//	// in that channel.
-//	@Test
-//	public void testAddUserToChannel() {
-//		server.createChannel("chess", 0);
-//		server.addUserToChannel(1, "chess");
-//		assertEquals(server.getChannel("chess").getUserCount(), 2);
-//	}
-//	
-//	@Test
-//	public void testUserRename(){
-//		
-//	}
-//	
-//	
-//	
-//
-//	
-//	
-//	
-//	/**
-//	 * Helper method: Get the server's response to a specific packet
-//	 * 
-//	 * @param s A socket over which to send the query
-//	 * @param query A packet representing the packet to send to the server
-//	 * @return Server response, in the form of a packet
-//	 */
-//	public Packet getServerResponse(Socket s, Packet query){
-//		Packet response = null;
-//		try{
-//			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-//			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-//			
-//			oos.writeObject(query);
-//			response = (Packet) ois.readObject();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		if(response == null)
-//			throw new RuntimeException("NO RESPONSE");
-//		else
-//			return response;
-//	}
-//
-//}
+package server;
+
+import java.io.IOException;
+import main.Packet;
+import org.junit.*;
+import static org.junit.Assert.*;
+
+public class ServerTest{
+    
+    private final int PORT = 1234;
+    private Server server;
+    
+    /**
+     * Check that upon initialization a new server has no users nor channels
+     */
+    @Test
+    public void checkStart ()
+    {
+        try {
+        server = new Server(PORT);
+        assertEquals(server.getUserList(), "");
+        assertEquals(server.getChannelList(), "");
+        server.terminate();
+        } catch (IOException e) {
+            System.out.println(e.getStackTrace());
+        }
+        
+    }
+ 
+    
+    /**
+     * Login with two clients to start, create two channels.
+     * Double-check that these are the only objects in the server HashMaps.  
+     */
+    @Test
+    public void logIn()
+    {
+        try {
+            server = new Server(PORT);
+            server.addDummyUsers("Guest_0");
+            server.addDummyUsers("Guest_1");
+            server.createChannel("chess", 0);
+            server.createChannel("bunnies", 0);
+            assertEquals(server.getUserList().split(" ").length, 2);
+            assertEquals(server.getChannelList().split(" ").length, 2);
+            //System.out.println(server.getUserList());
+            server.terminate();
+            } catch (IOException e) {
+                System.out.println(e.getStackTrace());
+                //assertEquals(0, 1);
+            }        
+    }
+
+    /**
+     * Basic test of creating, joining and leaving Channels.
+     * Individual tests are described below.
+     */
+    @Test
+    public void joiningChannel()
+    {
+        try {
+            server = new Server(PORT);
+            server.addDummyUsers("Guest_0");
+            server.addDummyUsers("Guest_1");
+            
+            //Tests getUserList method.
+            assertEquals(server.getUserList(), "Guest_0 Guest_1");
+            
+            //Tests getChannelList method in case of no Channels on server.
+            assertEquals(server.getChannelList(), "");
+            
+            //Tests that the creator is automatically a member of the Channel.
+            server.createChannel("chess", 0);      
+            assertEquals(server.getChannel("chess").getUserCount(), 1);
+            
+            //Tests that joining a non-existing Channel automatically creates that Channel
+            //Also tests getChannelList method.
+            server.addUserToChannel(0, "bunnies");
+            assertEquals(server.getChannelList().split(" ").length, 2);
+            assertEquals(server.getChannelList(), "chess bunnies");
+            assertTrue(server.getChannel("bunnies").hasUser(server.getUser(0)));
+            
+            //Tests joining a pre-existing Channel.  
+            server.addUserToChannel(1, "bunnies");
+            assertEquals(server.getChannel("bunnies").getUserCount(), 2);
+            assertTrue(server.getChannel("bunnies").hasUser(server.getUser(1)));
+            assertEquals(server.getChannelUsers("bunnies"), "Guest_0 Guest_1");
+            
+            //Tests leaving a pre-existing Channel
+            server.removeUserFromChannel(0, "bunnies");
+            assertEquals(server.getChannel("bunnies").getUserCount(), 1);
+            assertTrue(!server.getChannel("bunnies").hasUser(server.getUser(0)));
+            
+            //Tests that when the last member of a Channel leaves, it is deleted from the server.
+            server.removeUserFromChannel(0, "chess");            
+            assertTrue(!server.hasChannel("chess"));
+            
+            server.addUserToChannel(0, "chess");
+            server.addUserToChannel(1, "chess");
+            
+            //Tests a User leaving the server; checks that the User
+            //leaves all Channels it was in and if a Channel's member count drops to 0,
+            //it is deleted.  
+            server.notifyServerOfUserDisconnect(1);
+            assertEquals(server.getChannelList(), "chess");
+            assertEquals(server.getUserList(), "Guest_0");
+            assertEquals(server.getChannel("chess").getUserNames(), "Guest_0");
+            assertEquals(server.getChannel("chess").getUserCount(), 1);
+            
+            server.terminate();
+            
+            } catch (IOException e) {
+                System.out.println(e.getStackTrace());
+                //assertEquals(0, 1);
+            }        
+    }
+  
+    @Test
+    public void testSendMessage() {
+        try {
+            server = new Server(PORT);
+            
+            server.addDummyUsers("Guest_0");
+            server.createChannel("whee", 0); 
+            assertEquals(server.getChannelMessages("whee"), "");
+            Packet m1 = new Packet();
+            m1.setMessageText("hi world");
+            m1.setChannelName("whee");
+            m1.setAuthor("Guest_0");
+            server.sendMessageToChannel(0, m1);
+            Packet m2 = new Packet();
+            m2.setMessageText("bye world");
+            m2.setChannelName("whee");
+            m2.setAuthor("Guest_0");
+            server.sendMessageToChannel(0, m2);
+            assertEquals(server.getChannelMessages("whee"), 
+                    m1.getAuthor() + m1.getMessageText() + "\n" + 
+            m2.getAuthor() + m2.getMessageText());
+            assertEquals(server.getChannelUsers("whee"), "Guest_0");
+            
+            server.terminate();
+            
+        } catch (IOException e) {
+            System.out.println(e.getStackTrace());
+        }
+    }
+    
+   
+
+
+}

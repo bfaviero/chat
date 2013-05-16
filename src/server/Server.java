@@ -231,9 +231,10 @@ public class Server{
     	for(String channel : channelMap.keySet()){
     		Channel c = channelMap.get(channel);
     		if(c.hasUser(u)){
-    			c.removeUser(u);
+    		    removeUserFromChannel(userId, channel);
     		}
     	}
+    	userMap.remove(userId);
     }
     
     /**
