@@ -84,6 +84,7 @@ public class MoreServerTest{
             server.addUserToChannel(1, "bunnies");
             assertEquals(server.getChannel("bunnies").getUserCount(), 2);
             assertTrue(server.getChannel("bunnies").hasUser(server.getUser(1)));
+            assertEquals(server.getChannelUsers("bunnies"), "Guest_0 Guest_1");
             
             //Tests leaving a pre-existing Channel
             server.removeUserFromChannel(0, "bunnies");
@@ -124,6 +125,7 @@ public class MoreServerTest{
             assertEquals(server.getChannelMessages("whee"), 
                     m1.getAuthor() + m1.getMessageText() + "\n" + 
             m2.getAuthor() + m2.getMessageText());
+            assertEquals(server.getChannelUsers("whee"), "Guest_0");
             server.terminate();
             
         } catch (IOException e) {
