@@ -39,8 +39,15 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LIST_USERS:
-			String userList = this.server.getUserList();
-			response = new Packet(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList, "");			
+		    String room = message.getChannelName();
+		    if (room.length()>0) {
+		        String userList = this.server.getChannelUsers(room);
+		        response = new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", Calendar.getInstance(), userList, "");
+		    }
+		    else {
+		        String userList = this.server.getUserList();
+		        response = new Packet(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList, "");
+		    }				
 			sendMessage(response);
 			break;
 		case LOGIN:

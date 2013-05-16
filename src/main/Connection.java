@@ -25,7 +25,8 @@ public class Connection {
 		
 		public enum Command{ // Quit exits a channel, logout exits connection
 			LIST_USERS, LIST_CHANNELS, LOGOUT, LOGIN, MESSAGE, JOIN, QUIT,
-			REPLY_SUCCESS, REPLY_FAILURE, REPLY_ERROR, REPLY_LIST_CHANNELS, REPLY_LIST_USERS 
+			REPLY_SUCCESS, REPLY_FAILURE, REPLY_ERROR, REPLY_LIST_CHANNELS, 
+			REPLY_LIST_CHANNEL_USERS, REPLY_LIST_USERS 
 		};
 		
 		public class ConnectionReader implements Runnable {
