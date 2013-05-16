@@ -1,18 +1,11 @@
 package client;
 
-import java.awt.Dimension;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
-
-import main.Packet;
 
 
 public class Client {
@@ -27,10 +20,13 @@ public class Client {
     public Client(){
         this.roomMessages = new ConcurrentHashMap<String, List<String>>();
         this.currentRooms = new ArrayList<String>();
-        signin = new Signin(this);
-        signin.init();
-            
+        signin = new Signin(this);     
     }
+    
+    public void start(){
+    	signin.init();
+    }
+    
     public List<String> getRooms() {
         return currentRooms;
     }
@@ -72,5 +68,6 @@ public class Client {
     
     public static void main(String[] args) throws UnknownHostException, IOException {
         Client client = new Client();
+        client.start();
     }
 }

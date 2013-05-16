@@ -3,12 +3,10 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import main.Connection.Command;
 import main.Packet;
 import main.User;
 
@@ -17,7 +15,6 @@ import main.User;
  */
 
 public class Server{
-	private boolean debug; // For testing only
 	private int nextId;
 	private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
@@ -43,9 +40,8 @@ public class Server{
      * Instantiate a server on the specified port.
      * @param port The port to use for our server
      */
-    public Server(int port, boolean debug) {
+    public Server(int port) {
     	try{
-    		this.debug = debug;
     		server = new ServerSocket(port);
     		userMap = new HashMap<Integer, User>();
     		channelMap = new HashMap<String, Channel>();
@@ -304,7 +300,7 @@ public class Server{
      * Start a chat server.
      */
     public static void main(String[] args) {
-        Server server = new Server(1234, false);
+        Server server = new Server(1234);
         server.listen();
         
         // YOUR CODE HERE

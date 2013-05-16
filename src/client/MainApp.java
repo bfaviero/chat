@@ -1,19 +1,12 @@
 package client;
 
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.JList;
 import javax.swing.Box;
@@ -24,12 +17,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.Component;
 import java.awt.CardLayout;
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.border.BevelBorder;
-import javax.swing.AbstractListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -42,13 +29,10 @@ public class MainApp {
     private JTextField SigninText;
     private ClientConnection conn;
     public JTable roomTable;
-    public JList chatList;
+    public JList<String> chatList;
     public JLabel roomLabel;
-    public JList userList;
-    /**
-     * Launch the application.
-     * @wbp.parser.entryPoint
-     */
+    public JList<?> userList;
+    
     public void init() {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -61,9 +45,7 @@ public class MainApp {
             }
         });
     }
-    /**
-     * Create the application.
-     */
+
     public MainApp(ClientConnection conn) {
         this.conn = conn;
         
@@ -73,38 +55,15 @@ public class MainApp {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        /*
-         * 
-         * 
-         * Frame
-         * 
-         * 
-         */
         frame = new JFrame();
         frame.setBounds(100, 100, 450, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new CardLayout(0, 0));
-        /*
-         * 
-         * 
-         * signin screen
-         * 
-         * 
-         */
 
         /**
          * Go to the main app when the button is clicked
          */
         
-        /*
-         * 
-         * 
-         * 
-         * Main screen
-         * 
-         * 
-         * 
-         */
         JPanel main_panel = new JPanel();
         frame.getContentPane().add(main_panel, "name_1367989148345403000");
         main_panel.setLayout(new BorderLayout(0, 0));
@@ -127,8 +86,7 @@ public class MainApp {
         tree.setVisibleRowCount(40);
         tree.setShowsRootHandles(true);
         tree.setModel(new DefaultTreeModel(
-            new DefaultMutableTreeNode("All Users") {
-            }
+            new DefaultMutableTreeNode("All Users") {}
         ));
         
         
@@ -137,25 +95,23 @@ public class MainApp {
         JLabel lblPeople = new JLabel("Users in this room");
         verticalBox_1.add(lblPeople);
         
-        userList = new JList();
+        userList = new JList<Object>();
         verticalBox_1.add(userList);
         
         JPanel chatPanel = new JPanel();
         main_panel.add(chatPanel, BorderLayout.CENTER);
         chatPanel.setLayout(new BorderLayout(0, 0));
         
-        DefaultListModel chatListModel = new DefaultListModel();
-        chatList = new JList(chatListModel);
+        DefaultListModel<String> chatListModel = new DefaultListModel<String>();
+        chatList = new JList<String>(chatListModel);
 
         JScrollPane scrollPane = new JScrollPane(chatList);
         chatPanel.add(scrollPane, BorderLayout.CENTER);
         
-
-        
         Box horizontalBox = Box.createHorizontalBox();
         chatPanel.add(horizontalBox, BorderLayout.SOUTH);
         
-        JList list_3 = new JList();
+        JList<String> list_3 = new JList<String>();
         horizontalBox.add(list_3);
         
         JLabel lblNewLabel_1 = new JLabel("Type:");
@@ -167,14 +123,6 @@ public class MainApp {
         roomLabel = new JLabel("Room Name");
         chatPanel.add(roomLabel, BorderLayout.NORTH);
         
-        /*
-         * 
-         * 
-         * Listeners
-         * 
-         * 
-         */
-
         roomText = new JTextField();
         
         roomText.setColumns(10);

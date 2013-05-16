@@ -76,7 +76,6 @@ public class Signin {
         
         SigninText = new JTextField();
         
-        
         JButton join_button = new JButton("Join Server");
         join_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         SigninListener signinListener = new SigninListener(SigninText, client);
