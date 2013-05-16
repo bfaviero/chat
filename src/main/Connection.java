@@ -73,6 +73,11 @@ public class Connection {
 							e.printStackTrace();
 						}
 					}
+					try {
+						Thread.sleep(20);
+					} catch (InterruptedException e) {
+						continue;
+					}
 				}
 			}
 		
