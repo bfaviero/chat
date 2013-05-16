@@ -2,14 +2,17 @@ package client;
 
 import java.net.Socket;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 
 import main.Connection;
 import main.Packet;
@@ -52,7 +55,10 @@ public class ClientConnection extends Connection {
         Packet m = new Packet(Command.MESSAGE, room, Calendar.getInstance(), message,  "");
         sendMessage(m);
     }
-    
+    public void quit(String room) {
+        Packet response = new Packet(Command.QUIT, room, Calendar.getInstance(), client.getUser(), "");
+        sendMessage(response);
+    }
     public void listUsers() {
         Packet m = new Packet(Command.LIST_USERS, "", Calendar.getInstance(), "",  "");
         sendMessage(m);
@@ -102,6 +108,7 @@ public class ClientConnection extends Connection {
             break;
         case MESSAGE:
             String mess = message.getAuthor()+": "+ message.getMessageText();
+            JOptionPane.showMessageDialog(null, "receive");
             if (gui.roomLabel.getText().equals(message.getChannelName())) {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
@@ -115,14 +122,16 @@ public class ClientConnection extends Connection {
                 DefaultTableModel roomModel = (DefaultTableModel) gui.roomTable.getModel(); 
                 synchronized(roomModel){
                     for (int i=0;i<roomModel.getRowCount();i++) {
-                        if (roomModel.getValueAt(i, 2)==gui.roomLabel.getText()) {
+                        if (message.getChannelName()!=gui.roomLabel.getText() && message.getChannelName().equals(roomModel.getValueAt(i, 2))) {
                             String missed = (String) roomModel.getValueAt(i, 3);
                             try {
+                                JOptionPane.showMessageDialog(null, "adding");
                                 Integer numMissed = Integer.parseInt(missed);
                                 numMissed +=1;
                                 roomModel.setValueAt(numMissed.toString(), i, 3);
                             }
                             catch(Exception e) {
+                                JOptionPane.showMessageDialog(null, "1");
                                 roomModel.setValueAt("1", i, 3);
                             }
                             
@@ -134,6 +143,14 @@ public class ClientConnection extends Connection {
             client.getMessages(message.getChannelName()).add(mess);
             break;
         case QUIT:
+            JTree treeCopy = gui.tree;
+            DefaultTreeModel treeModel = (DefaultTreeModel) treeCopy.getModel();
+            DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
+            DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("All Users");
+            DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+            String name = message.getMessageText();
+            TreeNode fc = rootNode.getFirstChild();
+            
             break;
         default:
             System.out.println("Fell through");
