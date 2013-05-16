@@ -56,10 +56,10 @@ public class ServerConnection extends Connection {
 		case MESSAGE:
 		    System.out.println("Received message");
 		    System.out.println(message.getChannelName() + " " + message.getMessageText());
-			this.server.sendMessageToChannel(this.user, message);
+			this.server.sendMessageToChannel(this.userId, message);
 			break;
 		case QUIT:
-			this.server.removeUserFromChannel(this.user, message.getChannelName());
+			this.server.removeUserFromChannel(this.userId, message.getChannelName());
 			break;
 		default:
 			System.out.println("Fell through");
