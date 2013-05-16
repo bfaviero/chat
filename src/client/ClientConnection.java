@@ -1,12 +1,14 @@
 package client;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.table.DefaultTableModel;
 
 import server.Server;
 import main.User;
@@ -28,7 +30,12 @@ public class ClientConnection extends Connection {
     public void setGUI(MainApp gui){
     	this.gui = gui;
     }
-    
+    public List<String> getMessages(String room) {
+        return client.getMessages(room);
+    }
+    public boolean roomExists(String room) {
+        return client.currentRooms.contains(room);
+    }
     public void join(String room) {
     	System.out.println("Sent join request, room: " + room);
         Packet m = new Packet(Command.JOIN, room, Calendar.getInstance(), "", "");
@@ -54,7 +61,7 @@ public class ClientConnection extends Connection {
         System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
         Packet response;
         switch(message.getCommand()){
-        case LIST_CHANNELS:
+        case REPLY_LIST_CHANNELS:
             
             break;
         case REPLY_SUCCESS:
@@ -69,7 +76,13 @@ public class ClientConnection extends Connection {
             break;
         case REPLY_FAILURE:
             break;
-        case LIST_USERS:
+        case REPLY_LIST_USERS:
+            DefaultListModel model1 =(DefaultListModel) gui.userList.getModel();
+            model1.clear();
+            String[] text = message.getMessageText().split(" ");
+            for (String name : text) {
+                model1.addElement(name);
+            }
             break;
         case MESSAGE:
             System.out.println("receiving message");
@@ -82,7 +95,10 @@ public class ClientConnection extends Connection {
                     chatList.repaint();
                 }
             }
-            client.roomMessages.get(message.getChannelName()).add(mess);
+            else {
+                
+            }
+            client.getMessages(message.getChannelName()).add(mess);
             break;
         case QUIT:
             break;

@@ -3,6 +3,7 @@ package client;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -12,6 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import main.Packet;
+import main.Connection.Command;
 
 
 public class RoomTextListener implements KeyListener {
@@ -28,14 +32,24 @@ public class RoomTextListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_ENTER) {   
-            List<String> messages = new ArrayList<String>();
-            conn.client.roomMessages.put(roomText.getText(), messages);
-            String text = roomText.getText();
-            DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
-            model.addRow(new Object[]{"x", ">", text});
-            this.roomLabel.setText(text);
-            conn.join(text);
+        if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
+            String room = roomText.getText();
+            if (room.contains(" ")) {
+                JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
+            }
+            else {
+                if (!conn.roomExists(room)) {
+                    List<String> messages = new ArrayList<String>();
+                    conn.client.roomMessages.put(roomText.getText(), messages);
+                    
+                    DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+                    model.addRow(new Object[]{"x", ">", room});
+                    this.roomLabel.setText(room);
+                    conn.join(room);
+                    Packet message = new Packet(Command.LIST_USERS, room, Calendar.getInstance(), "", conn.getUsername());
+                    conn.sendMessage(message);
+                }
+            }
             roomText.setText("");
             
         }
