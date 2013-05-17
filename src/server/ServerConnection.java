@@ -51,6 +51,7 @@ public class ServerConnection extends Connection {
 			sendMessage(response);
 			break;
 		case LOGIN:
+		    System.out.println("Login successful");
 			String nickname = message.getMessageText();
 			this.user.setNickname(nickname);
 			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
