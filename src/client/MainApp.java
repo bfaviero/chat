@@ -19,6 +19,8 @@ import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.Component;
 import java.awt.CardLayout;
+import java.awt.Dimension;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -163,7 +165,7 @@ public class MainApp {
         //JScrollPane roomPane = new JScrollPane();
         roomText.addKeyListener(new RoomTextListener(roomTable, roomText, roomLabel, conn));
         verticalBox.add(roomText);
-        verticalBox.add(roomTable);
+        
         //verticalBox.add(roomPane);
         verticalBox.add(roomTable);
         
