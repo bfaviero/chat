@@ -89,10 +89,6 @@ public class ClientConnection extends Connection {
             DefaultMutableTreeNode rootNode1 = (DefaultMutableTreeNode) treeModel1.getRoot();
             rootNode1.add(new DefaultMutableTreeNode(message.getAuthor()));
             break;
-        case JOIN:
-            response = new Packet(Command.LOGIN, "", Calendar.getInstance(), client.getUser(), "");
-            sendMessage(response);
-            break;
         case REPLY_FAILURE:
             break;
         case REPLY_LIST_USERS:

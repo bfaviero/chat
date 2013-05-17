@@ -133,9 +133,10 @@ public class Server{
      */
     public void addUserToChannel(int userId, String channelName){
     	// Need to create a new channel if this one doesn't exist already
-    	if(!channelMap.containsKey(channelName))
+    	if(!channelMap.containsKey(channelName)) {
     	    System.out.println("Hi world");
     		createChannel(channelName, userId);
+    	}
     	Channel c = channelMap.get(channelName);
     	System.out.println(c.getUserCount());
     	User u = userMap.get(userId);
