@@ -20,7 +20,9 @@ public class TypeListener implements KeyListener {
     private ClientConnection conn; 
     private JLabel roomLabel;
     private JTable roomTable;
-    
+    /**
+     * Listens for a message being sent through the chat box
+     */
     public TypeListener(JList chatList, JTextField type, JTable roomTable, JLabel roomLabel, ClientConnection conn) {
         this.chatList = chatList;
         this.type = type;
