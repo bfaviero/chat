@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/resources/grouper.png</name>
-			<type>1</type>
-			<location>/Users/bfaviero/Documents/workspace/guichat/grouper.png</location>
-		</link>
-	</linkedResources>
 </projectDescription>
