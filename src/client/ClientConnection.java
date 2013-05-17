@@ -93,13 +93,6 @@ public class ClientConnection extends Connection {
         case REPLY_SUCCESS:
             System.out.print("Reply success");
             break;
-        case LOGIN:
-            JTree treeCopy1 = gui.tree;
-            DefaultTreeModel treeModel1 = (DefaultTreeModel) treeCopy1.getModel();
-            DefaultMutableTreeNode rootNode1 = (DefaultMutableTreeNode) treeModel1.getRoot();
-            rootNode1.add(new DefaultMutableTreeNode(message.getAuthor()));
-            treeCopy1.setModel(treeModel1);
-            break;
         case REPLY_FAILURE:
             break;
         case JOIN:
