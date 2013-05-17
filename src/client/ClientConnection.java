@@ -26,56 +26,111 @@ public class ClientConnection extends Connection {
         this.client = client;
     }
     
+    /**
+     * Set GUI corresponding to this ClientConnection.
+     * @param gui - the MainApp GUI.  
+     */
     public void setGUI(MainApp gui){
     	this.gui = gui;
     }
     
+    /**
+     * Get a list of a channel's Messages.  
+     * @param room - the channel being queried
+     * @return a List of the channel's Message contents
+     */
     public List<String> getMessages(String room) {
         return client.getMessages(room);
     }
     
+    /**
+     * See if this client is in this channel.
+     * @param room - the channel being queried.
+     * @return boolean; yes if so, no else.
+     */
     public boolean roomExists(String room) {
         return client.roomMessages.containsKey(room);
     }
     
+    /**
+     * Request this client join a channel on the server.
+     * @param room - name of the channel being queried.  
+     */
     public void join(String room) {
     	System.out.println("Sent join request, room: " + room);
         Packet m = new Packet(Command.JOIN, room, "", "");
         sendMessage(m);
     }
     
+    /**
+     * Send a request to log into the server 
+     * @param userName - username of this Client
+     */
     public void login(String userName) {
         System.out.println("Connection's got this shit");
         Packet m = new Packet(Command.LOGIN, "", userName, "");
         sendMessage(m);
     }
     
+    /**
+     * Send a request to send a message to a channel.
+     * @param message - the message being sent
+     * @param room - name of the channel being sent to
+     */
     public void message(String message, String room) {
         Packet m = new Packet(Command.MESSAGE, room, message, "");
         sendMessage(m);
     }
+    
+    /**
+     * Send a request for the client to leave a channel.
+     * @param room - the name of the channel we want to leave
+     */
     public void quit(String room) {
         client.roomMessages.remove(room);
         Packet response = new Packet(Command.QUIT, room, client.getUser(), "");
         sendMessage(response);
     }
+    
+    /**
+     * Send a request for the currently logged-in users of the server.
+     */
     public void listUsers() {
         Packet m = new Packet(Command.LIST_USERS, "", "", "");
         sendMessage(m);
     }
+    
+    /**
+     * Send a request for the usernames of the members of a channel
+     * @param room - the channel whose users we want to know
+     */
     public void listChannelUsers(String room) {
         Packet m = new Packet(Command.LIST_USERS, room, "", "");
         sendMessage(m);
     }
 
+    /**
+     * Get this connection's client's username
+     * @return the username of the client
+     */
     public String getUsername() {
         return client.getUser();
     }
     
+    /**
+     * Return the list of the specified room's messages
+     * @param roomName
+     * @return List of the room's Packets' contents.  
+     */
     public List<String> getRoomMessages(String roomName) {
         return client.roomMessages.get(roomName);
     }
     
+    /**
+     * @param Packet message - the message to be processed
+     * Process messages returned from the ServerConnection by updating 
+     * GUI objects.  
+     */
     public synchronized void processMessage(Packet message){
         System.out.println("Message received and processing in progress");
         System.out.println(message.getCommand().name() + ": " + message.getChannelName() + " " + message.getMessageText());
@@ -164,6 +219,9 @@ public class ClientConnection extends Connection {
         }
     }
 
+    /**
+     * Dummy method; use in debugging.  
+     */
 	public void processUserDisconnect(){
 		// Do nothing
 	}

@@ -21,6 +21,10 @@ public class ServerConnection extends Connection {
 		this.server = server;
 	}
 
+	/**
+	 * @message - the Packet to be processed. 
+	 * Override - handles incoming message by calling Server methods.  
+	 */
 	public void processMessage(Packet message){
 		Packet response;
 		System.out.println(message.getCommand().name() + " " + message.getChannelName());
@@ -76,12 +80,18 @@ public class ServerConnection extends Connection {
 		}
 	}
 	
+	/**
+	 * Handles a user disconnecting.  
+	 */
 	public void processUserDisconnect(){
 		System.out.println("User disconnected");
 		this.server.notifyServerOfUserDisconnect(this.userId);
 		closeSockets();
 	}
 	
+	/**
+	 * Closes this Connection's sockets.  
+	 */
 	public void closeSockets(){
 		try{
 			// Stop handling IO
