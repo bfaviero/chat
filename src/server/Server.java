@@ -166,9 +166,12 @@ public class Server{
                 User u = userMap.get(userID);
                 if (debug == false) {
                     channel.addMessage(new Packet(Command.QUIT, channelName, "", u.nickname), u);
+                    channel.removeUser(userMap.get(userID));
                 }
-
-                channel.removeUser(userMap.get(userID));
+                else {
+                    channel.dummyRemoveUser(userMap.get(userID));
+                }
+                
             }
         }
     }

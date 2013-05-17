@@ -83,6 +83,17 @@ public class Channel{
             }
         }
     }
+    
+    /**
+     * Dummy method for removing Users in automated tests.  
+     * @return
+     */
+    public void dummyRemoveUser(User user)
+    {
+        if(this.hasUser(user)) {
+            this.users.remove(user);
+        }
+    }
 
     // Rep invariant: number of users in the current room > 0;
     public boolean getRepInvariant(){
