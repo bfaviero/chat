@@ -22,6 +22,8 @@ public class Signin {
     private Client client;
     public JList chatList;
     public JLabel roomLabel;
+    public JTextField ServerText;
+    public JTextField PortText;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -68,6 +70,26 @@ public class Signin {
         Component verticalStrut = Box.createVerticalStrut(20);
         signin_panel.add(verticalStrut);
         
+        Box horizontalBox = Box.createHorizontalBox();
+        signin_panel.add(horizontalBox);
+        
+        JLabel ServerLabeL = new JLabel("Server:");
+        horizontalBox.add(ServerLabeL);
+        
+        ServerText = new JTextField();
+        horizontalBox.add(ServerText);
+        ServerText.setColumns(10);
+        
+        Box PortBox = Box.createHorizontalBox();
+        signin_panel.add(PortBox);
+        
+        JLabel PortLabel = new JLabel("Port:");
+        PortBox.add(PortLabel);
+        
+        PortText = new JTextField();
+        PortBox.add(PortText);
+        PortText.setColumns(10);
+        
         Box signin_box = Box.createHorizontalBox();
         signin_panel.add(signin_box);
         
@@ -78,7 +100,7 @@ public class Signin {
         
         JButton join_button = new JButton("Join Server");
         join_button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        SigninListener signinListener = new SigninListener(SigninText, client);
+        SigninListener signinListener = new SigninListener(SigninText, client, ServerText, PortText);
         join_button.addActionListener(signinListener);
 
         // Make enter key work the same as pressing the Join Server button
@@ -87,6 +109,8 @@ public class Signin {
         signin_box.add(SigninText);
         SigninText.setColumns(10);
         SigninText.setMaximumSize(SigninText.getPreferredSize() );
+        ServerText.setMaximumSize(ServerText.getPreferredSize() );
+        PortText.setMaximumSize(PortText.getPreferredSize() );
         signin_panel.add(join_button);
    
     }

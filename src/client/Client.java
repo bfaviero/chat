@@ -58,12 +58,14 @@ public class Client {
     /**
      * Logs into the system, and serves up the main chat GUI.
      * @param user
+     * @param port 
+     * @param server 
      */
-    public void login(String user){
+    public void login(String user, String server, int port){
         this.user = user;
         Socket socket = null;
         try {
-            socket = new Socket("localhost", 1234);
+            socket = new Socket(server, port);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
