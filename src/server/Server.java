@@ -135,19 +135,7 @@ public class Server{
      * @param channelName - the name of the Channel the User wants to join.
      */
     public void addUserToChannel(int userId, String channelName){
-<<<<<<< HEAD
-    	// Need to create a new channel if this one doesn't exist already
-    	if(!channelMap.containsKey(channelName)) {
-    	    System.out.println("Hi world");
-    		createChannel(channelName, userId);
-    	}
-    	Channel c = channelMap.get(channelName);
-    	System.out.println(c.getUserCount());
-    	User u = userMap.get(userId);
-    	System.out.println(u == null);
-    	c.addMessage(new Packet(Command.JOIN, channelName, "", u.nickname), u);
-    	c.addUser(userMap.get(userId));
-=======
+
         // Need to create a new channel if this one doesn't exist already
         synchronized(channelMap) {
             if(!channelMap.containsKey(channelName)) {
@@ -159,10 +147,9 @@ public class Server{
         //System.out.println(c.getUserCount());
         User u = userMap.get(userId);
         if (debug == false) {
-            c.addMessage(new Packet(Command.JOIN, channelName, Calendar.getInstance(), "", u.nickname), u);
+            c.addMessage(new Packet(Command.JOIN, channelName, "", u.nickname), u);
         }
         c.addUser(userMap.get(userId));
->>>>>>> 04ed1b1e1572958a6799d635f5a5cd11676d7cb6
     }
 
     /**
@@ -176,14 +163,10 @@ public class Server{
             if(channelMap.containsKey(channelName)){
                 Channel channel = channelMap.get(channelName);
                 User u = userMap.get(userID);
-<<<<<<< HEAD
-                channel.addMessage(new Packet(Command.QUIT, channelName, "", u.nickname), u);
-=======
                 if (debug == false) {
-                    channel.addMessage(new Packet(Command.QUIT, channelName, Calendar.getInstance(), "", u.nickname), u);
+                    channel.addMessage(new Packet(Command.QUIT, channelName, "", u.nickname), u);
                 }
 
->>>>>>> 04ed1b1e1572958a6799d635f5a5cd11676d7cb6
                 channel.removeUser(userMap.get(userID));
             }
         }
