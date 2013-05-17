@@ -46,6 +46,16 @@ public class Channel{
     }
     
     /**
+     * Dummy message for adding messages to this Channel;
+     * foregoes the necessity of using a Connection.  
+     * used in automated testing.  
+     */
+    public void dummyAddMessage(Packet m)
+    {
+        this.messages.add(m);
+    }
+    
+    /**
      * Adds the User to this Channel if it was not already a member.  
      * If the User was already a member, do not add it again.
      * @param user - the User to be added to this Channel.

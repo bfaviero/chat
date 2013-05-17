@@ -17,95 +17,99 @@ import main.User;
  */
 
 public class Server{
-	private Integer nextId;
-	private ServerSocket server;
+    private Integer nextId;
+    private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
     private HashMap<String, Channel> channelMap; // Maps room names to channels
     private Thread channelMonitor;
-    
+    private boolean debug;
+
     public class ChannelMonitor implements Runnable{
-		@Override
-		public void run() {
-			while(!Thread.currentThread().isInterrupted()){
-				for(Iterator<Map.Entry<String, Channel>> it = channelMap.entrySet().iterator(); it.hasNext();){
-					Map.Entry<String, Channel> entry = it.next();
-					synchronized(channelMap){
-						if(!entry.getValue().getRepInvariant())
-							channelMap.remove(entry.getKey());
-					}
-				}
-			}
-		}
+        @Override
+        public void run() {
+            while(!Thread.currentThread().isInterrupted()){
+                for(Iterator<Map.Entry<String, Channel>> it = channelMap.entrySet().iterator(); it.hasNext();){
+                    Map.Entry<String, Channel> entry = it.next();
+                    synchronized(channelMap){
+                        if(!entry.getValue().getRepInvariant())
+                            channelMap.remove(entry.getKey());
+                    }
+                }
+            }
+        }
     }
-    
+
     /**
      * Instantiate a server on the specified port.
      * @param port The port to use for our server
      */
-    public Server(int port) {
-    	try{
-    		server = new ServerSocket(port);
-    		userMap = new HashMap<Integer, User>();
-    		channelMap = new HashMap<String, Channel>();
-    		nextId = 0;
-    		//channelMonitor = new Thread(new ChannelMonitor());
-    		//channelMonitor.start();
-    	}
-    	catch(Exception e){
-    		e.printStackTrace();   		
-    	}
+    public Server(int port, boolean d) {
+        try{
+            server = new ServerSocket(port);
+            userMap = new HashMap<Integer, User>();
+            channelMap = new HashMap<String, Channel>();
+            nextId = 0;
+            debug = d;
+            //channelMonitor = new Thread(new ChannelMonitor());
+            //channelMonitor.start();
+        }
+        catch(Exception e){
+            e.printStackTrace();   		
+        }
     }
-   
-    
+
+
     /**
      *  Listen for connections on the port specified in the Server constructor.
      *  Create new ServerConnections and corresponding Users when a connection is made.  
      */
     public void listen(){
-    	try{    		
-    		while(true){
-	    		Socket socket = server.accept();
-	    		makeUserFromSocket(socket);
-    		}
-    	}
-    	catch(IOException e){
-    		e.printStackTrace();
-    	}
+        try{    		
+            while(true){
+                Socket socket = server.accept();
+                makeUserFromSocket(socket);
+            }
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
-    
+
     /**
      * Creates an instance of User with unique to represent the client on the socket
      * and adds it to the Server's userMap.  The User is given a default name.  
      * @param socket, the Socket the user is communicating from
      */
     public void makeUserFromSocket(Socket socket){
-    	// make sure that we don't assign same ID to two users by mistake
-    	synchronized(nextId){
-    	String nickname = new String("Guest_" + String.valueOf(nextId));
-		
-		// Create a server connection and connect it to the appropriate user.
-		ServerConnection userConnection = new ServerConnection(nextId, socket, this);
-		User user = new User(nextId, nickname, userConnection);
-		userConnection.setUser(user);
-		
-		// Send a response that connection was successful;
-		
-		//I'd argue to put nextID++ in the synchronized block. 
-		userMap.put(nextId, user);
-		nextId++;
-		
-    	synchronized(userMap){
-	    	for(User u : userMap.values()){
-	    		if(u != user){
-	    			System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
-	    			u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
-	    		}
-	    	}
-			
-    	}
-	}
+
+        // make sure that we don't assign same ID to two users by mistake
+        synchronized(nextId){
+            String nickname = new String("Guest_" + String.valueOf(nextId));
+
+            // Create a server connection and connect it to the appropriate user.
+            ServerConnection userConnection = new ServerConnection(nextId, socket, this);
+            User user = new User(nextId, nickname, userConnection);
+            userConnection.setUser(user);
+
+            // Send a response that connection was successful;
+
+            //I'd argue to put nextID++ in the synchronized block. 
+            userMap.put(nextId, user);
+            nextId++;
+            if (debug == false) {
+                synchronized(userMap){
+                    for(User u : userMap.values()){
+                        if(u != user){
+                            System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
+                            u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
+                        }
+                    }
+
+                }
+            }
+        }
     }
-    
+
     /**
      * Create a Channel as per request from a User, with a given channel Name.  
      * @param channelName - the name the User wants to call this new Channel.
@@ -116,14 +120,14 @@ public class Server{
      * @return the newly created Channel.  
      */
     public Channel createChannel(String channelName, int firstUserId){
-    	Channel newChannel;
-    	synchronized(channelMap){
-	    	newChannel = new Channel(channelName, userMap.get(firstUserId));
-	    	channelMap.put(channelName, newChannel);
-    	}
-    	return newChannel;
+        Channel newChannel;
+        synchronized(channelMap){
+            newChannel = new Channel(channelName, userMap.get(firstUserId));
+            channelMap.put(channelName, newChannel);
+        }
+        return newChannel;
     }
-    
+
     /**
      * Have a User join a Channel with a specified name, if such a Channel exists.  
      * @param userId - the userID of the User making the join request.  
@@ -131,6 +135,7 @@ public class Server{
      * @param channelName - the name of the Channel the User wants to join.
      */
     public void addUserToChannel(int userId, String channelName){
+<<<<<<< HEAD
     	// Need to create a new channel if this one doesn't exist already
     	if(!channelMap.containsKey(channelName)) {
     	    System.out.println("Hi world");
@@ -142,8 +147,24 @@ public class Server{
     	System.out.println(u == null);
     	c.addMessage(new Packet(Command.JOIN, channelName, "", u.nickname), u);
     	c.addUser(userMap.get(userId));
+=======
+        // Need to create a new channel if this one doesn't exist already
+        synchronized(channelMap) {
+            if(!channelMap.containsKey(channelName)) {
+                System.out.println("Hi world");
+                createChannel(channelName, userId);
+            }
+        }
+        Channel c = channelMap.get(channelName);
+        //System.out.println(c.getUserCount());
+        User u = userMap.get(userId);
+        if (debug == false) {
+            c.addMessage(new Packet(Command.JOIN, channelName, Calendar.getInstance(), "", u.nickname), u);
+        }
+        c.addUser(userMap.get(userId));
+>>>>>>> 04ed1b1e1572958a6799d635f5a5cd11676d7cb6
     }
-    
+
     /**
      * Removes a User from a Channel with a specified name, if such a Channel exists.  
      * @param int userID - the ID of the User that will be removed.
@@ -155,38 +176,45 @@ public class Server{
             if(channelMap.containsKey(channelName)){
                 Channel channel = channelMap.get(channelName);
                 User u = userMap.get(userID);
+<<<<<<< HEAD
                 channel.addMessage(new Packet(Command.QUIT, channelName, "", u.nickname), u);
+=======
+                if (debug == false) {
+                    channel.addMessage(new Packet(Command.QUIT, channelName, Calendar.getInstance(), "", u.nickname), u);
+                }
+
+>>>>>>> 04ed1b1e1572958a6799d635f5a5cd11676d7cb6
                 channel.removeUser(userMap.get(userID));
             }
         }
     }
-    
+
     /**
      * Returns a string representation of all active Users on the Server.
      * @return a string of active User nicknames separated by " ".  
      */
     // Returns a string formatted as "user1 user2 user3"
     public String getUserList(){
-    	System.out.println(userMap.size());
-    	StringBuilder userList = new StringBuilder("");
-    	for(User u : userMap.values()){
-    		userList.append(u.nickname+" ");
-    	}
-    	return userList.toString().trim();
+        System.out.println(userMap.size());
+        StringBuilder userList = new StringBuilder("");
+        for(User u : userMap.values()){
+            userList.append(u.nickname+" ");
+        }
+        return userList.toString().trim();
     }
-    
+
     /**
      * Returns a string representation of all active Channels on the Server.
      * @return a string of active Channel names separated by " ".  
      */
     public String getChannelList(){
-    	StringBuilder channelList = new StringBuilder("");
-    	for(String channelName : channelMap.keySet()){
-    		channelList.append(channelName+" ");
-    	}
-    	return channelList.toString().trim();
+        StringBuilder channelList = new StringBuilder("");
+        for(String channelName : channelMap.keySet()){
+            channelList.append(channelName+" ");
+        }
+        return channelList.toString().trim();
     }
-    
+
     /**
      * Returns a string representation of all Users that are members of a Channel.
      * @return a string of User nicknames separated by " ".  
@@ -199,7 +227,7 @@ public class Server{
         if(channelMap.containsKey(channelName)){
             messages = channelMap.get(channelName).getUserNames();
         }
-        
+
         return messages;
     }
     /**
@@ -215,11 +243,11 @@ public class Server{
         if(channelMap.containsKey(channelName)){
             messages = channelMap.get(channelName).getMessages();
         }
-        
+
         return messages;
     }
-    
-    
+
+
     /**
      * Sends a Message to a requested Channel from a User, if the Channel exists.  
      * @param userID - the int ID of the User sending the message.
@@ -228,39 +256,48 @@ public class Server{
      * message is being sent to and the contents of the message.
      */
     public void sendMessageToChannel(int userID, Packet message){
-    	System.out.println(userMap.get(userID).nickname);
-    	System.out.println(this.channelMap.keySet().size());
-    	System.out.println(message.getChannelName() + " " + message.getMessageText());
+        System.out.println(userMap.get(userID).nickname);
+        System.out.println(this.channelMap.keySet().size());
+        System.out.println(message.getChannelName() + " " + message.getMessageText());
         System.out.println("Send message to channel");
-    	if(channelMap.containsKey(message.getChannelName())){
-    	    System.out.println("channelMap contains channelName "+message.getChannelName());
-    		Channel channel = channelMap.get(message.getChannelName());
-    		channel.addMessage(message, userMap.get(userID));
-    	}
+        synchronized(channelMap) {
+            if(channelMap.containsKey(message.getChannelName())){
+                System.out.println("channelMap contains channelName "+message.getChannelName());
+                Channel channel = channelMap.get(message.getChannelName());
+                if (debug == false) {
+                    channel.addMessage(message, userMap.get(userID));
+                }
+                else {
+                    channel.dummyAddMessage(message);
+                }
+            } 
+        }
     }
-    
-    
-    
+
+
+
     /**
      * Removes a User from the Server upon its client disconnecting 
      * and erases its presence from the Server's Channels.
      * @param userId - the ID of the User leaving the Server.
      */
     public void notifyServerOfUserDisconnect(int userId){
-    	User u = userMap.get(userId);
-    	synchronized(channelMap){
-	    	Iterator it = channelMap.entrySet().iterator();
-	        while (it.hasNext()) {
-	        	Map.Entry<String, Channel> nextChannel = (Map.Entry<String, Channel>) it.next();
-	            Channel channel = (Channel)nextChannel.getValue();
-	            if(channel.hasUser(u)){
-	            	removeUserFromChannel(userId, (String)nextChannel.getKey());
-	            }
-	        }
-    	}
-    	userMap.remove(userId);
+        User u = userMap.get(userId);
+
+        synchronized(channelMap){
+            Iterator it = channelMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Channel> nextChannel = (Map.Entry<String, Channel>) it.next();
+                Channel channel = (Channel)nextChannel.getValue();
+                if(channel.hasUser(u)){
+                    removeUserFromChannel(userId, (String)nextChannel.getKey());
+                }
+            }
+        }
+
+        userMap.remove(userId);
     }
-    
+
     /**
      * Gets an instance of Channel.
      * @param channelName
@@ -268,9 +305,9 @@ public class Server{
      * returns null if requested Channel does not exist.
      */
     public Channel getChannel(String channelName){
-    	return channelMap.get(channelName);
+        return channelMap.get(channelName);
     }
-    
+
     /**
      * Used in Server testing.  Gets an instance of User.
      * @param id - the int id of the User on the userMap.  
@@ -280,7 +317,7 @@ public class Server{
     public User getUser(int userID){
         return userMap.get(userID);
     }
-    
+
     /**
      * Used in Server testing.  Create an instance of User with nickname s.
      * @param s, the nickname of User.  
@@ -291,7 +328,7 @@ public class Server{
             this.nextId++;
         }
     }
-    
+
     /**
      * Used in Server testing.  Checks if there is a Channel with the given name
      * on the server.
@@ -301,7 +338,7 @@ public class Server{
     public boolean hasChannel(String name){
         return this.channelMap.containsKey(name);
     }
-    
+
     /**
      * Used in Server testing.  Checks if there is a User with the given name
      * on the server.
@@ -311,23 +348,23 @@ public class Server{
     public boolean hasUser(String name){
         return this.userMap.containsKey(name);
     }
-    
+
     /**
      * Closes the server.
      * @throws IOException
      */
     public void terminate() throws IOException{
-    	this.server.close();
-    	//this.channelMonitor.interrupt();
+        this.server.close();
+        //this.channelMonitor.interrupt();
     }
-    
+
     /**
      * Start a chat server.
      */
     public static void main(String[] args) {
-        Server server = new Server(1234);
+        Server server = new Server(1234, false);
         server.listen();
-        
+
         // YOUR CODE HERE
         // It is not required (or recommended) to implement the server in
         // this runner class.

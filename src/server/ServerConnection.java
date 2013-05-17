@@ -41,7 +41,8 @@ public class ServerConnection extends Connection {
 		    String room = message.getChannelName();
 		    if (room.length()>0) {
 		        String userList = this.server.getChannelUsers(room);
-		        response = new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", userList, "");
+
+		        response = new Packet(Command.REPLY_LIST_CHANNEL_USERS, room, userList, "");
 		    }
 		    else {
 		        String userList = this.server.getUserList();

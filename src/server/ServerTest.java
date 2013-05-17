@@ -17,7 +17,7 @@ public class ServerTest{
     public void checkStart ()
     {
         try {
-        server = new Server(PORT);
+        server = new Server(PORT, true);
         assertEquals(server.getUserList(), "");
         assertEquals(server.getChannelList(), "");
         server.terminate();
@@ -36,7 +36,7 @@ public class ServerTest{
     public void logIn()
     {
         try {
-            server = new Server(PORT);
+            server = new Server(PORT, true);
             server.addDummyUsers("Guest_0");
             server.addDummyUsers("Guest_1");
             server.createChannel("chess", 0);
@@ -59,7 +59,7 @@ public class ServerTest{
     public void joiningChannel()
     {
         try {
-            server = new Server(PORT);
+            server = new Server(PORT, true);
             server.addDummyUsers("Guest_0");
             server.addDummyUsers("Guest_1");
             
@@ -91,34 +91,37 @@ public class ServerTest{
             assertEquals(server.getChannel("bunnies").getUserCount(), 1);
             assertTrue(!server.getChannel("bunnies").hasUser(server.getUser(0)));
             
-            //Tests that when the last member of a Channel leaves, it is deleted from the server.
+            //Tests that when the last member of a Channel leaves, it is not deleted from the server.
             server.removeUserFromChannel(0, "chess");            
-            assertTrue(!server.hasChannel("chess"));
+            assertTrue(server.hasChannel("chess"));
             
             server.addUserToChannel(0, "chess");
             server.addUserToChannel(1, "chess");
             
             //Tests a User leaving the server; checks that the User
-            //leaves all Channels it was in and if a Channel's member count drops to 0,
-            //it is deleted.  
+            //leaves all Channels it was in but if a Channel's member count drops to 0,
+            //it is not deleted.  
             server.notifyServerOfUserDisconnect(1);
-            assertEquals(server.getChannelList(), "chess");
+            assertEquals(server.getChannelList(), "chess bunnies");
             assertEquals(server.getUserList(), "Guest_0");
             assertEquals(server.getChannel("chess").getUserNames(), "Guest_0");
             assertEquals(server.getChannel("chess").getUserCount(), 1);
-            
+            assertEquals(server.getChannel("bunnies").getUserCount(), 0);
             server.terminate();
             
             } catch (IOException e) {
                 System.out.println(e.getStackTrace());
                 //assertEquals(0, 1);
-            }        
-    }
-  
+            } 
+        }
+   
+    /**
+     * Tests that channels correctly receive and store Packets that are sent to them.  
+     */
     @Test
     public void testSendMessage() {
         try {
-            server = new Server(PORT);
+            server = new Server(PORT, true);
             
             server.addDummyUsers("Guest_0");
             server.createChannel("whee", 0); 
