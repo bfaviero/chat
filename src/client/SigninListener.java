@@ -44,7 +44,10 @@ public class SigninListener implements ActionListener{
         }
         else {
             port = Integer.parseInt(portText.getText());
-            client.login(text, server, port);        
+            if(!client.login(text, server, port)){
+            	JOptionPane.showMessageDialog(null, "Could not establish a connection to port "+String.valueOf(port)
+            										+ " on "+server);
+            }
         }
     }
 }

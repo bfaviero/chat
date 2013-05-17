@@ -53,22 +53,20 @@ public class Client {
         return user;
     }
     /**
-     * Logs into the system, and serves up the main chat GUI.
+     * Logs into the system, and serves up the main chat GUI if successful. 
+     * Return false if connection unsuccessful
+     * 
      * @param user
      * @param port 
      * @param server 
      */
-    public void login(String user, String server, int port){
+    public boolean login(String user, String server, int port){
         this.user = user;
         Socket socket = null;
         try {
             socket = new Socket(server, port);
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+            return false;
         }
         conn = new ClientConnection(socket, this);
         conn.login(user);
@@ -77,6 +75,7 @@ public class Client {
         signin.frame.setVisible(false);
         gui.init();
         conn.listUsers();
+        return true;
     }
     
     public static void main(String[] args) throws UnknownHostException, IOException {
