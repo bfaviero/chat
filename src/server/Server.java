@@ -268,6 +268,7 @@ public class Server{
             }
 
             userMap.remove(userId);
+            System.out.println("user has disconnected");
             if (debug == false) {
                 for(User us : userMap.values()){
                     us.connection.sendMessage(new Packet(Command.REPLY_LIST_USERS, "", getUserList(), ""));
