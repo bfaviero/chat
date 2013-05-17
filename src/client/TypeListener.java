@@ -41,7 +41,7 @@ public class TypeListener implements KeyListener {
      * When key is pressed in the typing box
      */
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
+        if(e.getKeyCode() == KeyEvent.VK_ENTER && !type.getText().equals("")) { 
             //This is a gloval order of the locks
             synchronized(roomTable) {
                 synchronized(roomLabel) {
