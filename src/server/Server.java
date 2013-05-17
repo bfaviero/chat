@@ -81,30 +81,30 @@ public class Server{
      */
     public void makeUserFromSocket(Socket socket){
     	// make sure that we don't assign same ID to two users by mistake
-    	synchronized(nextId){
-    	String nickname = new String("Guest_" + String.valueOf(nextId));
-		
-		// Create a server connection and connect it to the appropriate user.
-		ServerConnection userConnection = new ServerConnection(nextId, socket, this);
-		User user = new User(nextId, nickname, userConnection);
-		userConnection.setUser(user);
-		
-		// Send a response that connection was successful;
-		
-		//I'd argue to put nextID++ in the synchronized block. 
-		userMap.put(nextId, user);
-		nextId++;
-		
-    	synchronized(userMap){
-	    	for(User u : userMap.values()){
-	    		if(u != user){
-	    			System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
-	    			u.connection.sendMessage(new Packet(Command.LOGIN, "", Calendar.getInstance(), "", user.nickname));
-	    		}
-	    	}
-			
-    	}
-	}
+        synchronized(nextId){
+            String nickname = new String("Guest_" + String.valueOf(nextId));
+
+            // Create a server connection and connect it to the appropriate user.
+            ServerConnection userConnection = new ServerConnection(nextId, socket, this);
+            User user = new User(nextId, nickname, userConnection);
+            userConnection.setUser(user);
+
+            // Send a response that connection was successful;
+
+            //I'd argue to put nextID++ in the synchronized block. 
+            userMap.put(nextId, user);
+            nextId++;
+
+            synchronized(userMap){
+                for(User u : userMap.values()){
+                    if(u != user){
+                        System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
+                        u.connection.sendMessage(new Packet(Command.LOGIN, "", Calendar.getInstance(), "", user.nickname));
+                    }
+                }
+
+            }
+        }
     }
     
     /**
@@ -133,14 +133,15 @@ public class Server{
      */
     public void addUserToChannel(int userId, String channelName){
     	// Need to create a new channel if this one doesn't exist already
-    	if(!channelMap.containsKey(channelName)) {
-    	    System.out.println("Hi world");
-    		createChannel(channelName, userId);
-    	}
+        synchronized(channelMap) {
+            if(!channelMap.containsKey(channelName)) {
+                System.out.println("Hi world");
+                createChannel(channelName, userId);
+            }
+        }
     	Channel c = channelMap.get(channelName);
-    	System.out.println(c.getUserCount());
+    	//System.out.println(c.getUserCount());
     	User u = userMap.get(userId);
-    	System.out.println(u == null);
     	c.addMessage(new Packet(Command.JOIN, channelName, Calendar.getInstance(), "", u.nickname), u);
     	c.addUser(userMap.get(userId));
     }
@@ -233,11 +234,13 @@ public class Server{
     	System.out.println(this.channelMap.keySet().size());
     	System.out.println(message.getChannelName() + " " + message.getMessageText());
         System.out.println("Send message to channel");
-    	if(channelMap.containsKey(message.getChannelName())){
-    	    System.out.println("channelMap contains channelName "+message.getChannelName());
-    		Channel channel = channelMap.get(message.getChannelName());
-    		channel.addMessage(message, userMap.get(userID));
-    	}
+        synchronized(channelMap) {
+            if(channelMap.containsKey(message.getChannelName())){
+                System.out.println("channelMap contains channelName "+message.getChannelName());
+                Channel channel = channelMap.get(message.getChannelName());
+                channel.addMessage(message, userMap.get(userID));
+            } 
+        }
     }
     
     
