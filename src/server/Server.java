@@ -101,7 +101,8 @@ public class Server{
                     for(User u : userMap.values()){
                         if(u != user){
                             System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
-                            u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
+                            //u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
+                            u.connection.sendMessage(new Packet(Command.LIST_USERS, "", getUserList(), ""));
                         }
                     }
 
