@@ -62,6 +62,7 @@ class ButtonEditor extends DefaultCellEditor {
    */
   private boolean isPushed;
   private JList chatList;
+private JList userList;
   /**
    * Instantiates the button editor, which fires when the "leave" button is pressed.
    * @param checkBox A placeholder component
@@ -69,8 +70,9 @@ class ButtonEditor extends DefaultCellEditor {
    * @param conn The connection that communicates with the socket
  * @param chatList 
    */
-  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList) {
+  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList, JList userList) {
     super(checkBox);
+    this.userList = userList;
     this.conn = conn;
     this.roomLabel = roomLabel;
     button = new JButton();
@@ -93,10 +95,15 @@ class ButtonEditor extends DefaultCellEditor {
     label = (value == null) ? "" : value.toString();
     button.setText(label);
     isPushed = true;
+    String roomName = roomLabel.getText();
     DefaultTableModel model = (DefaultTableModel) table.getModel();
     roomLabel.setText(" ");
     DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
     chatModel.setSize(0);
+    if (roomName.equals(model.getValueAt(row, 2))) {
+        DefaultListModel userListModel = (DefaultListModel) userList.getModel();
+        userListModel.setSize(0);
+    }
     conn.quit((String) model.getValueAt(row, 2));
     model.removeRow(row);
     return button;
@@ -171,7 +178,7 @@ class JoinButtonEditor extends DefaultCellEditor {
           for (String message : messagesArr) {
               chatModel.addElement(message);
           }
-          
+          conn.listChannelUsers(roomName);
           DefaultTableModel roomModel = (DefaultTableModel) roomTable.getModel(); 
           roomModel.setValueAt("", row, 3);
       }

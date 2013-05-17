@@ -156,7 +156,7 @@ public class MainApp {
 
         roomTable.getColumn("leave").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("leave").setCellEditor(
-            new ButtonEditor(new JCheckBox(), roomLabel, conn, chatList));
+            new ButtonEditor(new JCheckBox(), roomLabel, conn, chatList, userList));
         roomTable.getColumn("join").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("join").setCellEditor(
             new JoinButtonEditor(new JCheckBox(), roomLabel, conn, chatList, roomTable));

@@ -55,6 +55,7 @@ public class ClientConnection extends Connection {
         sendMessage(m);
     }
     public void quit(String room) {
+        client.roomMessages.remove(room);
         Packet response = new Packet(Command.QUIT, room, client.getUser(), "");
         sendMessage(response);
     }
@@ -102,9 +103,6 @@ public class ClientConnection extends Connection {
             }
             break;
         case REPLY_LIST_USERS:
-            DefaultListModel model1 = (DefaultListModel) gui.userList.getModel();
-            model1.clear();
-
             JTree tree = gui.tree;
             DefaultMutableTreeNode root = new DefaultMutableTreeNode("All Users");
             DefaultTreeModel model = new DefaultTreeModel(root);
@@ -114,6 +112,7 @@ public class ClientConnection extends Connection {
                 root.add(new DefaultMutableTreeNode(name));
             }
             tree.setModel(model);
+            tree.repaint();
             break;
         case MESSAGE:
             String mess = message.getAuthor()+": "+ message.getMessageText();
