@@ -269,20 +269,27 @@ public class Server{
      * @param userId - the ID of the User leaving the Server.
      */
     public void notifyServerOfUserDisconnect(int userId){
-        User u = userMap.get(userId);
+        synchronized(userMap) {
+            User u = userMap.get(userId);
 
-        synchronized(channelMap){
-            Iterator it = channelMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Channel> nextChannel = (Map.Entry<String, Channel>) it.next();
-                Channel channel = (Channel)nextChannel.getValue();
-                if(channel.hasUser(u)){
-                    removeUserFromChannel(userId, (String)nextChannel.getKey());
+            synchronized(channelMap){
+                Iterator it = channelMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Channel> nextChannel = (Map.Entry<String, Channel>) it.next();
+                    Channel channel = (Channel)nextChannel.getValue();
+                    if(channel.hasUser(u)){
+                        removeUserFromChannel(userId, (String)nextChannel.getKey());
+                    }
+                }
+            }
+
+            userMap.remove(userId);
+            if (debug == false) {
+                for(User us : userMap.values()){
+                    us.connection.sendMessage(new Packet(Command.REPLY_LIST_USERS, "", getUserList(), ""));
                 }
             }
         }
-
-        userMap.remove(userId);
     }
 
     /**
