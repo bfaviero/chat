@@ -56,6 +56,7 @@ public class TypeListener implements KeyListener {
                     else text = user+": "+text;
                     
                     messages.add(":"+text);
+                    JOptionPane.showMessageDialog(null, "Sending");
                     conn.sendMessage(message);
                 }
             }

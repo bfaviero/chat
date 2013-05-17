@@ -111,11 +111,9 @@ public class ClientConnection extends Connection {
             break;
         case MESSAGE:
             String mess = message.getAuthor()+": "+ message.getMessageText();
-            JOptionPane.showMessageDialog(null, "receive");
             if (gui.roomLabel.getText().equals(message.getChannelName())) {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
-
                     DefaultListModel model2 = (DefaultListModel) chatList.getModel();
                     model2.addElement(mess);
                     chatList.repaint();

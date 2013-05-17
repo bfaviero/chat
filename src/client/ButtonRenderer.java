@@ -115,7 +115,7 @@ class JoinButtonEditor extends DefaultCellEditor {
       });
     }
 
-    public Component getTableCellEditorComponent(JTable table, Object value,
+    public synchronized Component getTableCellEditorComponent(JTable table, Object value,
         boolean isSelected, int row, int column) {
       if (isSelected) {
         button.setForeground(table.getSelectionForeground());
@@ -142,7 +142,6 @@ class JoinButtonEditor extends DefaultCellEditor {
           }
           
           DefaultTableModel roomModel = (DefaultTableModel) roomTable.getModel(); 
-          //Clear the 'missed messages'
           roomModel.setValueAt("", row, 3);
       }
       
