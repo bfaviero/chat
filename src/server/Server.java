@@ -91,7 +91,8 @@ public class Server{
 		
 		// Send a response that connection was successful;
 		
-		//I'd argue to put nextID++ in the synchronized block.  
+		//I'd argue to put nextID++ in the synchronized block. 
+		userMap.put(nextId, user);
 		nextId++;
 		
     	synchronized(userMap){
@@ -101,7 +102,7 @@ public class Server{
 	    			u.connection.sendMessage(new Packet(Command.LOGIN, "", Calendar.getInstance(), "", user.nickname));
 	    		}
 	    	}
-			userMap.put(nextId, user);
+			
     	}
 	}
     }
@@ -133,9 +134,12 @@ public class Server{
     public void addUserToChannel(int userId, String channelName){
     	// Need to create a new channel if this one doesn't exist already
     	if(!channelMap.containsKey(channelName))
+    	    System.out.println("Hi world");
     		createChannel(channelName, userId);
     	Channel c = channelMap.get(channelName);
+    	System.out.println(c.getUserCount());
     	User u = userMap.get(userId);
+    	System.out.println(u == null);
     	c.addMessage(new Packet(Command.JOIN, channelName, Calendar.getInstance(), "", u.nickname), u);
     	c.addUser(userMap.get(userId));
     }

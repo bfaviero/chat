@@ -57,6 +57,7 @@ public class Connection {
 						// Make sure that we're dealing with a valid socket;
 						
 						Packet nextMessage = (Packet)ois.readObject();
+						
 						processMessage(nextMessage);
 					}
 					if(userDisconnected){
