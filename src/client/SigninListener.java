@@ -29,12 +29,16 @@ public class SigninListener implements ActionListener{
     {
         String text = SigninText.getText();
         String server = serverText.getText();
+        String portString = portText.getText();
         int port = 0;
-        if (text.contains(" ")) {
-            JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
-            SigninText.setText(" ");
+        if (text.equals("") || server.equals("") || portString.equals("")){
+        	JOptionPane.showMessageDialog(null, "Please enter a server, port, and a username to proceed. ");
         }
-        else if (!portText.getText().matches("\\d+")) {
+        else if (text.contains(" ")) {
+            JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
+            SigninText.setText("");
+        }
+        else if (!portString.matches("\\d+")) {
             JOptionPane.showMessageDialog(null, "Please type in a positive integer port.");
             portText.setText("");
         }

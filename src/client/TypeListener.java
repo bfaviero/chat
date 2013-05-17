@@ -20,7 +20,9 @@ public class TypeListener implements KeyListener {
     private ClientConnection conn; 
     private JLabel roomLabel;
     private JTable roomTable;
-    
+    /**
+     * Listens for a message being sent through the chat box
+     */
     public TypeListener(JList chatList, JTextField type, JTable roomTable, JLabel roomLabel, ClientConnection conn) {
         this.chatList = chatList;
         this.type = type;
@@ -32,32 +34,34 @@ public class TypeListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
-            synchronized(chatList) {
-                String room = roomLabel.getText();
-                if (room.equals("Room Name")) {
-                    JOptionPane.showMessageDialog(null, "Please join a room first!");
-                }
-                else {
-                    String text = type.getText();
-                    type.setText("");
-                    DefaultListModel model = (DefaultListModel) chatList.getModel();
-                    model.addElement(conn.getUsername()+": "+ text);
-                    String user = conn.getUsername();
-                    
-                    List<String> messages = conn.getMessages(room);
-                    Packet message = new Packet(Command.MESSAGE, room, text, user);
-                    if (messages.size() > 1) {
-                        String lastMessage = messages.get(messages.size()-1);
-                        if (lastMessage.substring(0, lastMessage.indexOf(":")).equals(user)) {
-                            text = user+": "+text;
-                        }
-                    }
-                    else text = user+": "+text;
-                    
-                    messages.add(":"+text);
-                    conn.sendMessage(message);
-                }
-            }
+            synchronized(roomTable) {
+                synchronized(roomLabel) {
+                    synchronized(chatList) {
+                            String room = roomLabel.getText();
+                            if (room.equals("Room Name")) {
+                                JOptionPane.showMessageDialog(null, "Please join a room first!");
+                            }
+                            else {
+                                String text = type.getText();
+                                type.setText("");
+                                DefaultListModel model = (DefaultListModel) chatList.getModel();
+                                model.addElement(conn.getUsername()+": "+ text);
+                                String user = conn.getUsername();
+                                
+                                List<String> messages = conn.getMessages(room);
+                                Packet message = new Packet(Command.MESSAGE, room, text, user);
+                                if (messages.size() > 1) {
+                                    String lastMessage = messages.get(messages.size()-1);
+                                    if (lastMessage.substring(0, lastMessage.indexOf(":")).equals(user)) {
+                                        text = user+": "+text;
+                                    }
+                                }
+                                else text = user+": "+text;
+                                
+                                messages.add(":"+text);
+                                conn.sendMessage(message);
+                            }
+            }}}
         }
     }
 

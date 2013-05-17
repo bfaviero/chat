@@ -92,18 +92,24 @@ private JList userList;
       boolean isSelected, int row, int column) {
     System.out.println("good");
     synchronized(table) {
-        isPushed = true;
-        String roomName = roomLabel.getText();
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        roomLabel.setText("Room Name");
-        DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
-        chatModel.setSize(0);
-        if (roomName.equals(model.getValueAt(row, 2))) {
-            DefaultListModel userListModel = (DefaultListModel) userList.getModel();
-            userListModel.setSize(0);
+        synchronized(roomLabel) {
+            synchronized(chatList) {
+                synchronized(userList) {
+                isPushed = true;
+                String roomName = roomLabel.getText();
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                roomLabel.setText("Room Name");
+                DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
+                chatModel.setSize(0);
+                if (roomName.equals(model.getValueAt(row, 2))) {
+                    DefaultListModel userListModel = (DefaultListModel) userList.getModel();
+                    userListModel.setSize(0);
+                }
+                conn.quit((String) model.getValueAt(row, 2));
+                model.removeRow(row);
+                }
+            }
         }
-        conn.quit((String) model.getValueAt(row, 2));
-        model.removeRow(row);
     }
     return null;
   }
@@ -161,19 +167,21 @@ class JoinButtonEditor extends DefaultCellEditor {
       DefaultTableModel model = (DefaultTableModel) table.getModel();
       String text = (String) model.getValueAt(row, column+1);
       roomLabel.setText(text);
-      synchronized(table) {
-          String roomName = roomLabel.getText();
-          DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
-          chatModel.setSize(0);
-          List<String> messages = conn.getRoomMessages(roomName);
-          String[] messagesArr = messages.toArray(new String[messages.size()]); 
-          for (String message : messagesArr) {
-              chatModel.addElement(message);
-          }
-          conn.listChannelUsers(roomName);
-          DefaultTableModel roomModel = (DefaultTableModel) roomTable.getModel(); 
-          roomModel.setValueAt("", row, 3);
-      }
+      synchronized(roomTable) {
+          synchronized(roomLabel) {
+              synchronized(chatList) {
+              String roomName = roomLabel.getText();
+              DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
+              chatModel.setSize(0);
+              List<String> messages = conn.getRoomMessages(roomName);
+              String[] messagesArr = messages.toArray(new String[messages.size()]); 
+              for (String message : messagesArr) {
+                  chatModel.addElement(message);
+              }
+              conn.listChannelUsers(roomName);
+              DefaultTableModel roomModel = (DefaultTableModel) roomTable.getModel(); 
+              roomModel.setValueAt("", row, 3);
+      }}}
       
       
       return button;

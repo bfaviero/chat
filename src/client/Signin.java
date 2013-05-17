@@ -34,6 +34,7 @@ public class Signin {
                 try {
                     initialize();
                     frame.setVisible(true);
+                    SigninText.requestFocusInWindow();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -76,7 +77,7 @@ public class Signin {
         JLabel ServerLabeL = new JLabel("Server:");
         horizontalBox.add(ServerLabeL);
         
-        ServerText = new JTextField();
+        ServerText = new JTextField("localhost");
         horizontalBox.add(ServerText);
         ServerText.setColumns(10);
         
@@ -86,7 +87,7 @@ public class Signin {
         JLabel PortLabel = new JLabel("Port:");
         PortBox.add(PortLabel);
         
-        PortText = new JTextField();
+        PortText = new JTextField("1234");
         PortBox.add(PortText);
         PortText.setColumns(10);
         

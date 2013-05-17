@@ -58,12 +58,12 @@ public class ServerConnection extends Connection {
 		    System.out.println("Login successful");
 			String nickname = message.getMessageText();
 			this.user.setNickname(nickname);
+			this.server.notifyUsersAboutNewLogin(this.user);
 			response = new Packet(Command.REPLY_SUCCESS, "", "", "");
 			sendMessage(response);
 			break;
 		case LOGOUT:
 			this.userDisconnected = true;	
-			// How do we deal with logout - threads will kill themselves
 			break;
 		case MESSAGE:
 		    System.out.println("Received message");

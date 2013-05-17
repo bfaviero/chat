@@ -33,27 +33,30 @@ public class RoomTextListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
-            String room = roomText.getText();
-            if (room.contains(" ")) {
-                JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
-            }
-            else {
-                if (!conn.roomExists(room)) {
-                    List<String> messages = new ArrayList<String>();
-                    conn.client.roomMessages.put(roomText.getText(), messages);
-                    
-                    DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
-                    int index = model.getRowCount();
-                    model.addRow(new Object[]{"x", ">", room, ""});
-                    conn.join(room);
-                    /*this.roomLabel.setText(room);
-                    Packet message = new Packet(Command.LIST_USERS, room, Calendar.getInstance(), "", conn.getUsername());
-                    conn.sendMessage(message);*/
-                    
-                }
-            }
-            roomText.setText("");
-            
+            synchronized(roomTable) {
+                synchronized(roomLabel) {
+                    synchronized(roomText) {
+                            String room = roomText.getText();
+                            if (room.contains(" ")) {
+                                JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
+                            }
+                            else {
+                                if (!conn.roomExists(room)) {
+                                    List<String> messages = new ArrayList<String>();
+                                    conn.client.roomMessages.put(roomText.getText(), messages);
+                                    
+                                    DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+                                    int index = model.getRowCount();
+                                    model.addRow(new Object[]{"x", ">", room, ""});
+                                    conn.join(room);
+                                    /*this.roomLabel.setText(room);
+                                    Packet message = new Packet(Command.LIST_USERS, room, Calendar.getInstance(), "", conn.getUsername());
+                                    conn.sendMessage(message);*/
+                                    
+                                }
+                            }
+                            roomText.setText("");
+                        }}}
         }
     }
 
