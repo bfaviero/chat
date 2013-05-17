@@ -21,23 +21,8 @@ public class Server{
     private ServerSocket server;
     private HashMap<Integer, User> userMap; // Maps usernames to users.
     private HashMap<String, Channel> channelMap; // Maps room names to channels
-    private Thread channelMonitor;
     private boolean debug;
 
-    public class ChannelMonitor implements Runnable{
-        @Override
-        public void run() {
-            while(!Thread.currentThread().isInterrupted()){
-                for(Iterator<Map.Entry<String, Channel>> it = channelMap.entrySet().iterator(); it.hasNext();){
-                    Map.Entry<String, Channel> entry = it.next();
-                    synchronized(channelMap){
-                        if(!entry.getValue().getRepInvariant())
-                            channelMap.remove(entry.getKey());
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Instantiate a server on the specified port.
@@ -96,21 +81,20 @@ public class Server{
             //I'd argue to put nextID++ in the synchronized block. 
             userMap.put(nextId, user);
             nextId++;
-            if (debug == false) {
-                synchronized(userMap){
-                    for(User u : userMap.values()){
-                        if(u != user){
-                            System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
-                            //u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
-                            u.connection.sendMessage(new Packet(Command.REPLY_LIST_USERS, "", getUserList(), ""));
-                        }
-                    }
-
-                }
-            }
         }
     }
 
+    public void notifyUsersAboutNewLogin(User user){
+	    synchronized(userMap){
+	        for(User u : userMap.values()){
+	            if(u != user){
+	                System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
+	                //u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
+	                u.connection.sendMessage(new Packet(Command.REPLY_LIST_USERS, "", getUserList(), ""));
+	            }
+	        }
+	    }
+    }
     /**
      * Create a Channel as per request from a User, with a given channel Name.  
      * @param channelName - the name the User wants to call this new Channel.
