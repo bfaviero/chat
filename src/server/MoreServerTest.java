@@ -17,7 +17,7 @@ public class MoreServerTest{
     public void checkStart ()
     {
         try {
-        server = new Server(PORT);
+        server = new Server(PORT, true);
         assertEquals(server.getUserList(), "");
         assertEquals(server.getChannelList(), "");
         server.terminate();
@@ -36,7 +36,7 @@ public class MoreServerTest{
     public void logIn()
     {
         try {
-            server = new Server(PORT);
+            server = new Server(PORT, true);
             server.addDummyUsers("Guest_0");
             server.addDummyUsers("Guest_1");
             server.createChannel("chess", 0);
@@ -59,7 +59,7 @@ public class MoreServerTest{
     public void joiningChannel()
     {
         try {
-            server = new Server(PORT);
+            server = new Server(PORT, true);
             server.addDummyUsers("Guest_0");
             server.addDummyUsers("Guest_1");
             
@@ -107,7 +107,7 @@ public class MoreServerTest{
     @Test
     public void testSendMessage() {
         try {
-            server = new Server(PORT);
+            server = new Server(PORT, true);
             
             server.addDummyUsers("Guest_0");
             server.createChannel("whee", 0); 
