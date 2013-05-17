@@ -90,43 +90,35 @@ private JList userList;
    */
   public Component getTableCellEditorComponent(JTable table, Object value,
       boolean isSelected, int row, int column) {
-    button.setForeground(table.getForeground());
-    button.setBackground(table.getBackground());
-    label = (value == null) ? "" : value.toString();
-    button.setText(label);
-    isPushed = true;
-    String roomName = roomLabel.getText();
-    DefaultTableModel model = (DefaultTableModel) table.getModel();
-    roomLabel.setText(" ");
-    DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
-    chatModel.setSize(0);
-    if (roomName.equals(model.getValueAt(row, 2))) {
-        DefaultListModel userListModel = (DefaultListModel) userList.getModel();
-        userListModel.setSize(0);
+    System.out.println("good");
+    synchronized(table) {
+        isPushed = true;
+        String roomName = roomLabel.getText();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        roomLabel.setText("Room Name");
+        DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
+        chatModel.setSize(0);
+        if (roomName.equals(model.getValueAt(row, 2))) {
+            DefaultListModel userListModel = (DefaultListModel) userList.getModel();
+            userListModel.setSize(0);
+        }
+        conn.quit((String) model.getValueAt(row, 2));
+        model.removeRow(row);
     }
-    conn.quit((String) model.getValueAt(row, 2));
-    model.removeRow(row);
-    return button;
+    return null;
   }
 
   public Object getCellEditorValue() {
-    if (isPushed) {
-      // 
-      // 
-      
-      // System.out.println(label + ": Ouch!");
-    }
-    isPushed = false;
+    isPushed = true;
     return new String(label);
   }
 
   public boolean stopCellEditing() {
-    isPushed = false;
+    isPushed = true;
     return super.stopCellEditing();
   }
 
   protected void fireEditingStopped() {
-    super.fireEditingStopped();
   }
 }
 class JoinButtonEditor extends DefaultCellEditor {
@@ -169,7 +161,7 @@ class JoinButtonEditor extends DefaultCellEditor {
       DefaultTableModel model = (DefaultTableModel) table.getModel();
       String text = (String) model.getValueAt(row, column+1);
       roomLabel.setText(text);
-      synchronized(chatList) {
+      synchronized(table) {
           String roomName = roomLabel.getText();
           DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
           chatModel.setSize(0);

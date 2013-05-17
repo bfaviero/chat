@@ -131,13 +131,11 @@ public class ClientConnection extends Connection {
                         if (message.getChannelName()!=gui.roomLabel.getText() && message.getChannelName().equals(roomModel.getValueAt(i, 2))) {
                             String missed = (String) roomModel.getValueAt(i, 3);
                             try {
-                                JOptionPane.showMessageDialog(null, "adding");
                                 Integer numMissed = Integer.parseInt(missed);
                                 numMissed +=1;
                                 roomModel.setValueAt(numMissed.toString(), i, 3);
                             }
                             catch(Exception e) {
-                                JOptionPane.showMessageDialog(null, "1");
                                 roomModel.setValueAt("1", i, 3);
                             }
                             
