@@ -5,6 +5,13 @@ import main.Packet;
 import org.junit.*;
 import static org.junit.Assert.*;
 
+/**
+ * Automated test of server-side methods, with 
+ * client commands being simulated by dummyUsers in the Server.  
+ * ClientConnection and ServerConnection methods moved to manual testing.
+ * 
+ */
+
 public class ServerTest{
     
     private final int PORT = 1234;

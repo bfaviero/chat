@@ -3,6 +3,7 @@ package server;
 import java.util.*;
 
 import main.Connection;
+import main.Connection.Command;
 import main.Packet;
 import main.User;
 
@@ -62,8 +63,9 @@ public class Channel{
      */
     public void addUser(User user)
     {
-        if(!this.users.contains(user))
+        if(!this.users.contains(user)) {
         	users.add(user);
+        }
     }
     
     /**
@@ -73,8 +75,24 @@ public class Channel{
      */
     public void removeUser(User user)
     {
-        if(this.hasUser(user))      
+        if(this.hasUser(user)) {    
         	this.users.remove(user);
+            for(User u : this.users){
+                System.out.println("Sent message to "+u.nickname);
+                u.connection.sendMessage(new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", getUserNames(), ""));
+            }
+        }
+    }
+    
+    /**
+     * Dummy method for removing Users in automated tests.  
+     * @return
+     */
+    public void dummyRemoveUser(User user)
+    {
+        if(this.hasUser(user)) {
+            this.users.remove(user);
+        }
     }
 
     // Rep invariant: number of users in the current room > 0;
