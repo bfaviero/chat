@@ -14,6 +14,10 @@ import java.awt.CardLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JMenuBar;
+import java.awt.Label;
+import java.awt.Color;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 public class Signin {
 
@@ -63,6 +67,7 @@ public class Signin {
         signin_panel.setLayout(new BoxLayout(signin_panel, BoxLayout.Y_AXIS));
         
         JLabel welcome_label = new JLabel("Welcome to GUI Chat!");
+        welcome_label.setBackground(new Color(138, 43, 226));
         welcome_label.setAlignmentY(0.0f);
         welcome_label.setAlignmentX(0.5f);
         welcome_label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -113,6 +118,7 @@ public class Signin {
         ServerText.setMaximumSize(ServerText.getPreferredSize() );
         PortText.setMaximumSize(PortText.getPreferredSize() );
         signin_panel.add(join_button);
+        signin_panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{verticalStrut, horizontalBox, ServerLabeL, PortBox, PortLabel, PortText, signin_box, signin_label, SigninText, join_button, welcome_label, ServerText}));
    
     }
 

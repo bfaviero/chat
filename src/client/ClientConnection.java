@@ -35,18 +35,18 @@ public class ClientConnection extends Connection {
     }
     
     /**
-     * Get a list of a channel's Messages.  
-     * @param room - the channel being queried
-     * @return a List of the channel's Message contents
+     * Get a list of a room Messages.  
+     * @param room - the room being queried
+     * @return a List of the room Message contents
      */
     public List<String> getMessages(String room) {
         return client.getMessages(room);
     }
     
     /**
-     * See if this client is in this channel.
-     * @param room - the channel being queried.
-     * @return boolean; yes if so, no else.
+     * See if this client is in this room.
+     * @param room The room being queried.
+     * @return boolean Returns true if the client is in the room
      */
     public boolean roomExists(String room) {
         return client.roomMessages.containsKey(room);
@@ -54,7 +54,7 @@ public class ClientConnection extends Connection {
     
     /**
      * Request this client join a channel on the server.
-     * @param room - name of the channel being queried.  
+     * @param room String name of the channel being queried.  
      */
     public void join(String room) {
     	System.out.println("Sent join request, room: " + room);
@@ -64,7 +64,7 @@ public class ClientConnection extends Connection {
     
     /**
      * Send a request to log into the server 
-     * @param userName - username of this Client
+     * @param userName String username of this user
      */
     public void login(String userName) {
         System.out.println("Connection's got this shit");
@@ -175,7 +175,7 @@ public class ClientConnection extends Connection {
                 synchronized(gui.chatList) {
                     JList chatList = gui.chatList;
                     DefaultListModel model2 = (DefaultListModel) chatList.getModel();
-                    model2.addElement(mess);
+                    model2.add(0, mess);
                     chatList.repaint();
                 }
             }
@@ -199,7 +199,7 @@ public class ClientConnection extends Connection {
                     }
                 }
             }
-            client.getMessages(message.getChannelName()).add(mess);
+            client.getMessages(message.getChannelName()).add(0, mess);
             break;
         case QUIT:
             JTree treeCopy = gui.tree;
