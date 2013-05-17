@@ -132,7 +132,7 @@ public class Signin {
         
         JButton join_button = new JButton("Join Server");
         join_button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        SigninListener signinListener = new SigninListener(SigninText, client, serverText, PortText);
+        SigninListener signinListener = new SigninListener(SigninText, client, serverText, PortText, frame);
         join_button.addActionListener(signinListener);
 
         // Make enter key work the same as pressing the Join Server button

@@ -60,7 +60,7 @@ public class Client {
      * @param port 
      * @param server 
      */
-    public boolean login(String user, String server, int port){
+    public boolean login(String user, String server, int port, int x, int y){
         this.user = user;
         Socket socket = null;
         try {
@@ -70,7 +70,7 @@ public class Client {
         }
         conn = new ClientConnection(socket, this);
         conn.login(user);
-        MainApp gui = new MainApp(conn);
+        MainApp gui = new MainApp(conn, x, y);
         conn.setGUI(gui);
         signin.frame.setVisible(false);
         gui.init();

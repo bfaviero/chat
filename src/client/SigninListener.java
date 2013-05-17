@@ -16,12 +16,14 @@ public class SigninListener implements ActionListener{
     private Client client;
     private JTextField serverText;
     private JTextField portText;
-    public SigninListener(JTextField SigninText, Client client, JTextField serverText, JTextField portText) {
+    private JFrame frame; // Save so that we can "swap" out windows seamlessly
+    
+    public SigninListener(JTextField SigninText, Client client, JTextField serverText, JTextField portText, JFrame frame) {
         this.client = client;
         this.SigninText = SigninText;
         this.serverText = serverText;
         this.portText = portText;
-        
+        this.frame = frame;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class SigninListener implements ActionListener{
         }
         else {
             port = Integer.parseInt(portText.getText());
-            if(!client.login(text, server, port)){
+            if(!client.login(text, server, port, frame.getX(), frame.getY())){
             	JOptionPane.showMessageDialog(null, "Could not establish a connection to port "+String.valueOf(port)
             										+ " on "+server);
             }

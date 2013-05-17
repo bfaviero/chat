@@ -56,6 +56,8 @@ public class MainApp {
     public JLabel roomLabel;
     public JList userList;
     public JTree tree;
+    protected int x;
+    protected int y;
     /**
      * Launch the application.
      * @wbp.parser.entryPoint
@@ -64,7 +66,7 @@ public class MainApp {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    initialize();
+                    initialize(x,y);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -73,17 +75,18 @@ public class MainApp {
         });
     }
 
-    public MainApp(ClientConnection conn) {
+    public MainApp(ClientConnection conn, int x, int y) {
         this.conn = conn;
-        
+        this.x = x;
+        this.y = y;
     }
 
     /**
-     * Initialize the contents of the frame.
+     * Initialize the contents of the frame, using the top corner (passed in via x, y)
      */
-    private void initialize() {
+    private void initialize(int x, int y) {
         frame = new JFrame();
-        frame.setBounds(100, 100, 500, 300);
+        frame.setBounds(x, y, 500, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new CardLayout(0, 0));
 
