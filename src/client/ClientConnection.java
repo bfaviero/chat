@@ -1,7 +1,6 @@
 package client;
 
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -36,31 +35,35 @@ public class ClientConnection extends Connection {
     }
     
     public boolean roomExists(String room) {
-        return client.currentRooms.contains(room);
+        return client.roomMessages.containsKey(room);
     }
     
     public void join(String room) {
     	System.out.println("Sent join request, room: " + room);
-        Packet m = new Packet(Command.JOIN, room, Calendar.getInstance(), "", "");
+        Packet m = new Packet(Command.JOIN, room, "", "");
         sendMessage(m);
     }
     
     public void login(String userName) {
         System.out.println("Connection's got this shit");
-        Packet m = new Packet(Command.LOGIN, "", Calendar.getInstance(), userName, "");
+        Packet m = new Packet(Command.LOGIN, "", userName, "");
         sendMessage(m);
     }
     
     public void message(String message, String room) {
-        Packet m = new Packet(Command.MESSAGE, room, Calendar.getInstance(), message,  "");
+        Packet m = new Packet(Command.MESSAGE, room, message, "");
         sendMessage(m);
     }
     public void quit(String room) {
-        Packet response = new Packet(Command.QUIT, room, Calendar.getInstance(), client.getUser(), "");
+        Packet response = new Packet(Command.QUIT, room, client.getUser(), "");
         sendMessage(response);
     }
     public void listUsers() {
-        Packet m = new Packet(Command.LIST_USERS, "", Calendar.getInstance(), "",  "");
+        Packet m = new Packet(Command.LIST_USERS, "", "", "");
+        sendMessage(m);
+    }
+    public void listChannelUsers(String room) {
+        Packet m = new Packet(Command.LIST_USERS, room, "", "");
         sendMessage(m);
     }
 
@@ -78,7 +81,14 @@ public class ClientConnection extends Connection {
         Packet response;
         switch(message.getCommand()){
         case REPLY_LIST_CHANNEL_USERS:
-            
+            if (message.getChannelName().equals(gui.roomLabel.getText())) {
+                DefaultListModel userListModel = (DefaultListModel) gui.userList.getModel();
+                userListModel.setSize(0);
+                String[] users = message.getMessageText().split(" ");
+                for (String user : users) {
+                    userListModel.addElement(user);
+                }
+            }
             break;
         case REPLY_SUCCESS:
             System.out.print("Reply success");
@@ -88,8 +98,15 @@ public class ClientConnection extends Connection {
             DefaultTreeModel treeModel1 = (DefaultTreeModel) treeCopy1.getModel();
             DefaultMutableTreeNode rootNode1 = (DefaultMutableTreeNode) treeModel1.getRoot();
             rootNode1.add(new DefaultMutableTreeNode(message.getAuthor()));
+            treeCopy1.setModel(treeModel1);
             break;
         case REPLY_FAILURE:
+            break;
+        case JOIN:
+            if (message.getChannelName().equals(gui.roomLabel.getText())) {
+                DefaultListModel userListModel = (DefaultListModel) gui.userList.getModel();
+                userListModel.addElement(message.getAuthor());
+            }
             break;
         case REPLY_LIST_USERS:
             DefaultListModel model1 = (DefaultListModel) gui.userList.getModel();

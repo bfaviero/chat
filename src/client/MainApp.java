@@ -105,7 +105,6 @@ public class MainApp {
 
         
         
-        JScrollPane UserScrollPane = new JScrollPane(tree);
         verticalBox_1.add(tree);
         
         
@@ -157,7 +156,7 @@ public class MainApp {
 
         roomTable.getColumn("leave").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("leave").setCellEditor(
-            new ButtonEditor(new JCheckBox(), roomLabel, conn));
+            new ButtonEditor(new JCheckBox(), roomLabel, conn, chatList));
         roomTable.getColumn("join").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("join").setCellEditor(
             new JoinButtonEditor(new JCheckBox(), roomLabel, conn, chatList, roomTable));

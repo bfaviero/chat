@@ -1,7 +1,6 @@
 package server;
 
 import java.net.Socket;
-import java.util.Calendar;
 
 import main.Connection;
 import main.Packet;
@@ -30,23 +29,23 @@ public class ServerConnection extends Connection {
 			// This user joins appropriate channel
 			System.out.println("CALLING addUserToChannel with: " + String.valueOf(this.userId) +" " + message.getChannelName());
 			this.server.addUserToChannel(this.userId, message.getChannelName());
-			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
+			response = new Packet(Command.REPLY_SUCCESS, "", "", "");
 			sendMessage(response);
 			break;
 		case LIST_CHANNELS:
 			String channelList = this.server.getChannelList();
-			response = new Packet(Command.REPLY_LIST_CHANNELS, "", Calendar.getInstance(), channelList, "");
+			response = new Packet(Command.REPLY_LIST_CHANNELS, "", channelList, "");
 			sendMessage(response);
 			break;
 		case LIST_USERS:
 		    String room = message.getChannelName();
 		    if (room.length()>0) {
 		        String userList = this.server.getChannelUsers(room);
-		        response = new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", Calendar.getInstance(), userList, "");
+		        response = new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", userList, "");
 		    }
 		    else {
 		        String userList = this.server.getUserList();
-		        response = new Packet(Command.REPLY_LIST_USERS, "", Calendar.getInstance(), userList, "");
+		        response = new Packet(Command.REPLY_LIST_USERS, "", userList, "");
 		    }				
 			sendMessage(response);
 			break;
@@ -54,7 +53,7 @@ public class ServerConnection extends Connection {
 		    System.out.println("Login successful");
 			String nickname = message.getMessageText();
 			this.user.setNickname(nickname);
-			response = new Packet(Command.REPLY_SUCCESS, "", Calendar.getInstance(), "", "");
+			response = new Packet(Command.REPLY_SUCCESS, "", "", "");
 			sendMessage(response);
 			break;
 		case LOGOUT:

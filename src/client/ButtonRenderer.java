@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 /**
- *Button Renderer represents the class of the table of room names
+ *Button Renderer represents the class of the table of room names. 
  */
 class ButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -35,28 +35,57 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
   }
 }
 
-
+/**
+ * 
+ * The button editor is what fires when the button is clicked.
+ * This button editor represents the "leave room" button.
+ */
 class ButtonEditor extends DefaultCellEditor {
+    /**
+     * The button
+     */
   protected JButton button;
-
+  /**
+   * 
+   */
   private String label;
+  /**
+   * Label containing the name of the current room
+   */
   private JLabel roomLabel;
+  /**
+   * The connection that communicates with the socket
+   */
   private ClientConnection conn;
+  /**
+   * Whether or not the button has been pushed
+   */
   private boolean isPushed;
-
-  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn) {
+  private JList chatList;
+  /**
+   * Instantiates the button editor, which fires when the "leave" button is pressed.
+   * @param checkBox A placeholder component
+   * @param roomLabel The name of the current room
+   * @param conn The connection that communicates with the socket
+ * @param chatList 
+   */
+  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList) {
     super(checkBox);
     this.conn = conn;
     this.roomLabel = roomLabel;
     button = new JButton();
     button.setOpaque(true);
+    this.chatList = chatList;
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         fireEditingStopped();
       }
     });
   }
-
+  /**
+   * This method controls what happens when the "leave" button is pressed.
+   * The user is removed from the room, the roomLabel is reset, and a 'quit' message is sent to the server
+   */
   public Component getTableCellEditorComponent(JTable table, Object value,
       boolean isSelected, int row, int column) {
     button.setForeground(table.getForeground());
@@ -65,7 +94,9 @@ class ButtonEditor extends DefaultCellEditor {
     button.setText(label);
     isPushed = true;
     DefaultTableModel model = (DefaultTableModel) table.getModel();
-    roomLabel.setText("");
+    roomLabel.setText(" ");
+    DefaultListModel chatModel = (DefaultListModel) chatList.getModel();
+    chatModel.setSize(0);
     conn.quit((String) model.getValueAt(row, 2));
     model.removeRow(row);
     return button;

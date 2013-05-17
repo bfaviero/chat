@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Calendar;
 
 import main.Connection.Command;
 import main.Packet;
@@ -17,10 +16,10 @@ public class TestServer implements Runnable{
 			Socket s = new Socket("localhost", 1234);
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-			Packet m = new Packet(Command.LOGIN, "", Calendar.getInstance(), "strelok", "");
-			Packet n = new Packet(Command.JOIN, "chess", Calendar.getInstance(), "", "");
-			Packet l = new Packet(Command.LIST_CHANNELS, "", Calendar.getInstance(), "", "");
-			Packet o = new Packet(Command.LIST_USERS, "", Calendar.getInstance(), "", "");
+			Packet m = new Packet(Command.LOGIN, "", "strelok", "");
+			Packet n = new Packet(Command.JOIN, "chess", "", "");
+			Packet l = new Packet(Command.LIST_CHANNELS, "", "", "");
+			Packet o = new Packet(Command.LIST_USERS, "", "", "");
 			
 			Packet[] messages = {m, n, l, o};
 			try {

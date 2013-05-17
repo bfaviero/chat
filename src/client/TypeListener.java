@@ -2,7 +2,6 @@ package client;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -46,7 +45,7 @@ public class TypeListener implements KeyListener {
                     String user = conn.getUsername();
                     
                     List<String> messages = conn.getMessages(room);
-                    Packet message = new Packet(Command.MESSAGE, room, Calendar.getInstance(), text, user);
+                    Packet message = new Packet(Command.MESSAGE, room, text, user);
                     if (messages.size() > 1) {
                         String lastMessage = messages.get(messages.size()-1);
                         if (lastMessage.substring(0, lastMessage.indexOf(":")).equals(user)) {
@@ -56,7 +55,6 @@ public class TypeListener implements KeyListener {
                     else text = user+": "+text;
                     
                     messages.add(":"+text);
-                    JOptionPane.showMessageDialog(null, "Sending");
                     conn.sendMessage(message);
                 }
             }

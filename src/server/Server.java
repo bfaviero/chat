@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -99,7 +98,7 @@ public class Server{
 	    	for(User u : userMap.values()){
 	    		if(u != user){
 	    			System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
-	    			u.connection.sendMessage(new Packet(Command.LOGIN, "", Calendar.getInstance(), "", user.nickname));
+	    			u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
 	    		}
 	    	}
 			
@@ -141,7 +140,7 @@ public class Server{
     	System.out.println(c.getUserCount());
     	User u = userMap.get(userId);
     	System.out.println(u == null);
-    	c.addMessage(new Packet(Command.JOIN, channelName, Calendar.getInstance(), "", u.nickname), u);
+    	c.addMessage(new Packet(Command.JOIN, channelName, "", u.nickname), u);
     	c.addUser(userMap.get(userId));
     }
     
@@ -156,7 +155,7 @@ public class Server{
             if(channelMap.containsKey(channelName)){
                 Channel channel = channelMap.get(channelName);
                 User u = userMap.get(userID);
-                channel.addMessage(new Packet(Command.QUIT, channelName, Calendar.getInstance(), "", u.nickname), u);
+                channel.addMessage(new Packet(Command.QUIT, channelName, "", u.nickname), u);
                 channel.removeUser(userMap.get(userID));
             }
         }

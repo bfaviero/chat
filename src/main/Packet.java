@@ -29,10 +29,9 @@ public class Packet implements java.io.Serializable{
 	    
 	}
 	
-	public Packet(Command command, String channelName, Calendar date, String messageText, String author){
+	public Packet(Command command, String channelName, String messageText, String author){
 		this.channelName = channelName;
 		this.command = command;
-		this.calendar = date;
 		this.messageText = messageText;
 		this.author = author;
 	}

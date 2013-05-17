@@ -18,8 +18,6 @@ public class Client {
     //The main GUI for the app
     private MainApp gui;
     //
-    //The rooms the user is currently in
-    protected List<String> currentRooms;
     //The messages from each room the user is in
     protected HashMap<String, List<String>> roomMessages; // Maps usernames to users.
     //The connection that communicates with the socket
@@ -29,7 +27,6 @@ public class Client {
 
     public Client(){
         this.roomMessages = new HashMap<String, List<String>>();
-        this.currentRooms = new ArrayList<String>();
         signin = new Signin(this);     
     }
     //Opens the sign-in screen
@@ -40,8 +37,8 @@ public class Client {
      * 
      * @return currentRooms The rooms the user is in
      */
-    public List<String> getRooms() {
-        return currentRooms;
+    public String[] getRooms() {
+        return roomMessages.keySet().toArray(new String[roomMessages.size()]);
     }
     public List<String> getMessages(String room) {
         return roomMessages.get(room);
