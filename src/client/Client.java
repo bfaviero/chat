@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+
 /**
  * 
  * The Client represents the program that runs on the user's machine. It stores information about the session, 
@@ -51,6 +54,19 @@ public class Client {
     }
     public String getUser() {
         return user;
+    }
+    
+    public void loadChannelMessages(String channel){
+    	List<String> messages = roomMessages.get(channel);
+    	
+    	for(String message : messages){
+	    	synchronized(gui.chatList) {
+	            JList chatList = gui.chatList;
+	            DefaultListModel model2 = (DefaultListModel) chatList.getModel();
+	            model2.add(0, message);
+	            chatList.repaint();
+	        }
+    	}
     }
     /**
      * Logs into the system, and serves up the main chat GUI if successful. 

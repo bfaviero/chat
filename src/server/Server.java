@@ -87,11 +87,9 @@ public class Server{
     public void notifyUsersAboutNewLogin(User user){
 	    synchronized(userMap){
 	        for(User u : userMap.values()){
-	            if(u != user){
 	                System.out.println("Alerted user " + u.nickname + " about --> " + user.nickname);
 	                //u.connection.sendMessage(new Packet(Command.LOGIN, "", "", user.nickname));
 	                u.connection.sendMessage(new Packet(Command.REPLY_LIST_USERS, "", getUserList(), ""));
-	            }
 	        }
 	    }
     }

@@ -40,7 +40,7 @@ class ButtonRenderer extends JButton implements TableCellRenderer {
  * The button editor is what fires when the button is clicked.
  * This button editor represents the "leave room" button.
  */
-class ButtonEditor extends DefaultCellEditor {
+class LeaveButtonEditor extends DefaultCellEditor {
     /**
      * The button
      */
@@ -70,7 +70,7 @@ private JList userList;
    * @param conn The connection that communicates with the socket
  * @param chatList 
    */
-  public ButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList, JList userList) {
+  public LeaveButtonEditor(JCheckBox checkBox, JLabel roomLabel, ClientConnection conn, JList chatList, JList userList) {
     super(checkBox);
     this.userList = userList;
     this.conn = conn;

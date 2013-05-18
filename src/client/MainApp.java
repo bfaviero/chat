@@ -56,6 +56,7 @@ public class MainApp {
     public JLabel roomLabel;
     public JList userList;
     public JTree tree;
+    public boolean visible = false;
     protected int x;
     protected int y;
     /**
@@ -68,6 +69,7 @@ public class MainApp {
                 try {
                     initialize(x,y);
                     frame.setVisible(true);
+                    visible = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -213,7 +215,7 @@ public class MainApp {
 
         roomTable.getColumn("leave").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("leave").setCellEditor(
-            new ButtonEditor(new JCheckBox(), roomLabel, conn, chatList, userList));
+            new LeaveButtonEditor(new JCheckBox(), roomLabel, conn, chatList, userList));
         roomTable.getColumn("join").setCellRenderer(new ButtonRenderer());
         roomTable.getColumn("join").setCellEditor(
             new JoinButtonEditor(new JCheckBox(), roomLabel, conn, chatList, roomTable));
@@ -232,11 +234,6 @@ public class MainApp {
         TypeListener typeListener = new TypeListener(chatList, type, roomTable, roomLabel, conn);
         type.addKeyListener(typeListener);
         horizontalBox.add(type);
-        
-        
-       
-
-
         
     }
 

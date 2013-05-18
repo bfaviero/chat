@@ -79,7 +79,7 @@ public class Channel{
         	this.users.remove(user);
             for(User u : this.users){
                 System.out.println("Sent message to "+u.nickname);
-                u.connection.sendMessage(new Packet(Command.REPLY_LIST_CHANNEL_USERS, "", getUserNames(), ""));
+                u.connection.sendMessage(new Packet(Command.REPLY_LIST_CHANNEL_USERS, this.title, getUserNames(), ""));
             }
         }
     }

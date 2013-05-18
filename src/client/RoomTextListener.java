@@ -40,20 +40,20 @@ public class RoomTextListener implements KeyListener {
                             if (room.contains(" ")) {
                                 JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
                             }
-                            else {
-                                if (!conn.roomExists(room)) {
-                                    List<String> messages = new ArrayList<String>();
-                                    conn.client.roomMessages.put(roomText.getText(), messages);
-                                    
-                                    DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
-                                    int index = model.getRowCount();
-                                    model.addRow(new Object[]{"x", ">", room, ""});
-                                    conn.join(room);
-                                    /*this.roomLabel.setText(room);
-                                    Packet message = new Packet(Command.LIST_USERS, room, Calendar.getInstance(), "", conn.getUsername());
-                                    conn.sendMessage(message);*/
-                                    
-                                }
+                            else if (!conn.roomExists(room)) {
+                                List<String> messages = new ArrayList<String>();
+                                conn.client.roomMessages.put(roomText.getText(), messages);
+
+                                DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+                                int index = model.getRowCount();
+                                model.addRow(new Object[]{"x", ">", room, ""});
+                                conn.join(room);
+                            }
+                            else{
+                                DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+                                int index = model.getRowCount();
+                                model.addRow(new Object[]{"x", ">", room, ""});
+                                conn.join(room);
                             }
                             roomText.setText("");
                         }}}

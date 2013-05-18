@@ -87,7 +87,7 @@ public class ClientConnection extends Connection {
      * @param room - the name of the channel we want to leave
      */
     public void quit(String room) {
-        client.roomMessages.remove(room);
+        //client.roomMessages.remove(room);
         Packet response = new Packet(Command.QUIT, room, client.getUser(), "");
         sendMessage(response);
     }
@@ -166,8 +166,21 @@ public class ClientConnection extends Connection {
             for (String name : text) {
                 root.add(new DefaultMutableTreeNode(name));
             }
+ 
+            // Sleep until tree is available. treeLogic means we have to wait extra time for tree to get setup before access
+            while(!gui.visible){
+            	try{
+            		tree=gui.tree;
+            		Thread.sleep(10);
+            	}
+            	catch(InterruptedException e){
+            		e.printStackTrace();
+            	}
+            }
+           
             tree.setModel(model);
             tree.repaint();
+            
             break;
         case MESSAGE:
             String mess = message.getAuthor()+": "+ message.getMessageText();
@@ -206,6 +219,8 @@ public class ClientConnection extends Connection {
             DefaultTreeModel treeModel = (DefaultTreeModel) treeCopy.getModel();
             DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) treeModel.getRoot();
             for (int i=0;i<rootNode.getChildCount();i++) {
+            	System.out.println(message.getAuthor());
+            	System.out.println("child: "+rootNode.getChildAt(i));
                 if (rootNode.getChildAt(i).equals(message.getAuthor())) {
                     rootNode.remove(i);
                     break;
