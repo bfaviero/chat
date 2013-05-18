@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -30,6 +31,20 @@ public class RoomTextListener implements KeyListener {
         this.roomLabel = roomLabel;
     }
 
+    private boolean channelAlreadyInTable(DefaultTableModel model, String channel){
+    	boolean channelExists = false;
+        
+        // Check if we've already instantiated room in left-hand table
+        Vector<Vector<String>> v = ((Vector)model.getDataVector());
+        for(int i = 0; i<v.size(); i++){
+        	if(v.elementAt(i).elementAt(2).equals(channel)){
+        		channelExists = true;
+        		break;
+        	}
+        }
+        return channelExists;
+    }
+    
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ENTER) { 
@@ -37,7 +52,12 @@ public class RoomTextListener implements KeyListener {
                 synchronized(roomLabel) {
                     synchronized(roomText) {
                             String room = roomText.getText();
-                            if (room.contains(" ")) {
+                            
+                            
+                            if (room.equals("")){
+                            	JOptionPane.showMessageDialog(null, "Please enter a room name");
+                            }
+                            else if (room.contains(" ")) {
                                 JOptionPane.showMessageDialog(null, "Please type in a name without spaces.");
                             }
                             else if (!conn.roomExists(room)) {
@@ -45,15 +65,17 @@ public class RoomTextListener implements KeyListener {
                                 conn.client.roomMessages.put(roomText.getText(), messages);
 
                                 DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
-                                int index = model.getRowCount();
+
                                 model.addRow(new Object[]{"x", ">", room, ""});
                                 conn.join(room);
                             }
                             else{
                                 DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
-                                int index = model.getRowCount();
-                                model.addRow(new Object[]{"x", ">", room, ""});
-                                conn.join(room);
+
+                                if(!channelAlreadyInTable(model, room)){
+                                	model.addRow(new Object[]{"x", ">", room, ""});
+                                	conn.join(room);
+                            	}
                             }
                             roomText.setText("");
                         }}}
