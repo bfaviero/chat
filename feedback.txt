@@ -1,0 +1,67 @@
+Project 2: GUI Chat					bfaviero, czuo, pashamur
+===================					(grader: Hayden)
+
+Team contract: 5 / 5
+
+Abstract Design: 9 / 10
+  Snapshot diagram: 4 / 5
+  Conversation and protocol: 5 / 5
+
+As we talked about, your initial snapshot diagram was more like a dependency
+diagram. But your revised one looks great! Similarly, your revised milestone 1
+does a nice job explaining your protocol and outlining the client/server state.
+
+System Design: 11 / 15
+  Usability design: 4 / 5
+  Code design and use of MVC: 4 / 5
+  Concurrency strategy: 3 / 5
+
+I like the way you organized handling connections; making a Connection
+superclass and subclassing that worked out very nicely. Though I think it would
+have been good if you documented your client design decisions more thoroughly --
+topics like how you decouple the view from the controller, for example. Your
+concurrency strategy for your server is sound and explained well. But as we
+talked about, your strategy doesn't discuss client concurrency issues (e.g.,
+with the GUI); in practice, it's often these issues that are the trickiest to
+debug.
+
+Testing: 14 / 15
+  Testing strategy: 9 / 10
+  Testing execution: 5 / 5
+
+Awesome job with testing! ServerTest looked very good. I'm not sure if manually
+testing concurrency by trying to send things at the same time is going to be
+very useful. You could have done something similar with an automated concurrency
+test like we suggested in PS3, or a delayed server response test (the asterisk
+in PS4).
+
+Implementation: 45 / 50
+  Initial demo: 10 / 10
+  Correctness: 13 / 15
+  Code: 8 / 10
+  User interface: 14 / 15
+
+You don't want to synchronize on an instance of Integer, as you're doing in
+Server.makeUserFromSocket. Java may choose to make a new instance when you do
+"nextId++". Conversely, Java can also choose to reuse instances for a range of
+values. As a result, it's possible two users will be assigned the same id. Your
+best bet for something like this is to go with an AtomicInteger. Or, to avoid
+concurrency issues altogether (sacrificing a tiny chance of collisions), make a
+User's id be a random integer or long.
+
+Similarly, in ClientConnection.processMessage, you do a lot of things outside
+the event dispatch thread. To be thread-safe, all updates to the GUI need to be
+inside the event dispatch thread (e.g., via invokeLater); simply synchronizing
+on objects won't guarantee thread-safety.
+
+A few small correctness/UI issues -- When a client leaves a room, the "Users in
+room" doesn't reflect that for other clients (without switching rooms); when the
+client rejoins, the "Users in room" adds the user again (so now the user shows
+up more than once). Also, sometimes when I logged in I was given the nickname
+"Guest_0" despite specifying a nickname, although I couldn't reliably reproduce
+it.
+
+TOTAL TEAM SCORE: 84 / 95
+
+(Individual scores will include 5 points for the reflection assignment,
+ and will be posted on Stellar.)
